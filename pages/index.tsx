@@ -17,8 +17,6 @@ export default function Main() {
     { id: 3, name: "定例", desc: "" },
   ]);
   const [current, setCurrent] = useState(channels[0]);
-  const dummyImage =
-    "https://www.pinclipart.com/picdir/big/15-159747_onlinelabels-clip-art-free-female-avatar-icons-png.png";
 
   return (
     <>
@@ -46,7 +44,12 @@ export default function Main() {
               marginRight: "15px",
             }}
           >
-            <Image src={dummyImage} alt="" height={40} width={40} />
+            <Image
+              src="https://www.pinclipart.com/picdir/big/15-159747_onlinelabels-clip-art-free-female-avatar-icons-png.png"
+              alt=""
+              height={40}
+              width={40}
+            />
             <div
               style={{
                 marginTop: "25px",
@@ -64,7 +67,7 @@ export default function Main() {
               <div
                 style={{
                   fontWeight: "bold",
-                  color: "rgb(207, 195, 207)",
+                  color: "white",
                   fontSize: "18px",
                   padding: "10px 15px",
                   cursor: "pointer",
