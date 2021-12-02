@@ -1,6 +1,6 @@
 # hiroba.tech プロジェクト
 
-[hiroba.tech](https://hiroba.tech/)用のリポジトリです。
+[hiroba.tech](https://www.hiroba.tech/)用のリポジトリです。
 
 ## 機能
 - 技術者の交流
