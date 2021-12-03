@@ -1,17 +1,27 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, createRef } from "react";
 import Image from "next/image";
 
+// 変数channel の型
 interface Channel {
   id: number;
   name: string;
   desc: string;
 }
-
+// 変数dialog の型
 interface Dialog {
   id: number;
   message: string;
   time: string;
   user: string;
+}
+// 変数user の型（未定）
+interface User {
+  id: number;
+  name: string;
+  avatar: string;
+  channel: string;
+  color: string;
+  login: boolean;
 }
 
 export default function Main() {
@@ -21,21 +31,23 @@ export default function Main() {
     { id: 2, name: "定例", desc: "いつもの時間で" },
   ]);
   const [current, setCurrent] = useState<number>(0);
-  const [user, setUser] = useState<string>("ひろばくん");
+  const [user, setUser] = useState<string>("ひろばくん"); //　ユーザーが変わるとアバターと吹き出しの色が変わる
   const [value, setValue] = useState<string>("");
   const [dialog, setDialog] = useState<Dialog[]>([
     {
       id: 0,
       message: "こんにちは",
       time: "15:10",
-      user: "たなか",
+      user: "ひろばくん",
     },
-    { id: 0, message: "はじめまして", time: "16:10", user: "たなか" },
-    { id: 1, message: "ありがとう", time: "17:10", user: "たなか" },
-    { id: 1, message: "どういたしまして", time: "18:10", user: "たなか" },
-    { id: 2, message: "こんにちは", time: "19:10", user: "たなか" },
-    { id: 2, message: "さようなら", time: "20:10", user: "たなか" },
+    { id: 0, message: "はじめまして", time: "16:10", user: "ひろばさん" },
+    { id: 1, message: "ありがとう", time: "17:10", user: "ひろばくん" },
+    { id: 1, message: "どういたしまして", time: "18:10", user: "ひろばさん" },
+    { id: 2, message: "こんにちは", time: "19:10", user: "ひろばくん" },
+    { id: 2, message: "さようなら", time: "20:10", user: "ひろばくん" },
   ]);
+
+  const ref = createRef<HTMLDivElement>();
 
   const handleOnClick = (e: number) => {
     setCurrent(e);
@@ -47,6 +59,22 @@ export default function Main() {
     setValue("");
   };
 
+  const changePerson = () => {
+    if (user === "ひろばくん") {
+      setUser("ひろばさん");
+    } else {
+      setUser("ひろばくん");
+    }
+  };
+
+  useEffect(() => {
+    ref!.current!.scrollIntoView({
+      // ! undefinedやnullにはならない
+      behavior: "smooth",
+      block: "end",
+    });
+  }, [ref]);
+
   return (
     <>
       <style jsx global>{`
@@ -56,6 +84,7 @@ export default function Main() {
         }
       `}</style>
       <div style={{ display: "flex" }}>
+        {/* サイドバー */}
         <div
           style={{
             background: "purple",
@@ -86,6 +115,7 @@ export default function Main() {
                 marginBottom: "20px",
                 fontSize: "20px",
               }}
+              onClick={() => changePerson()}
             >
               {user}
             </div>
@@ -132,6 +162,7 @@ export default function Main() {
           </div>
         </div>
 
+        {/* タイトル */}
         <div style={{ width: "100vw", position: "relative" }}>
           <div
             style={{
@@ -159,57 +190,76 @@ export default function Main() {
             </div>
           </div>
 
-          <div style={{ width: "70vw" }}>
-            <div style={{ paddingBottom: "90px" }}>
+          {/* メッセージエリア */}
+          <div
+            style={{
+              bottom: "0",
+              height: "70vh",
+              display: "fixed",
+              scrollBehavior: "auto",
+              overflow: "auto",
+            }}
+          >
+            <div ref={ref} style={{ paddingBottom: "90px" }}>
               {dialog.map((e, idx) => {
                 if (e.id === current) {
                   return (
                     <div key={idx}>
                       {user === e.user ? (
-                        <div>
-                          <div style={{ textAlign: "right" }}>
-                            <div>
-                              <div
-                                style={{
-                                  display: "flex",
-                                  right:"0"
-                                }}
-                              >
-                                <div
-                                  style={{
-                                    position: "relative",
-                                    display: "inline-block",
-                                    padding: "10px 10px",
-                                    minWidth: "120px",
-                                    maxWidth: "50%",
-                                    color: "black",
-                                    fontSize: "20px",
-                                    background: "skyblue",
-                                    marginRight: "30px",
-                                  }}
-                                >
-                                  {e.message}
-                                </div>
-                              </div>
-                              <div>
-                                <Image
-                                  src="https://ca.slack-edge.com/T0266FRGM-U2Q173U05-g863c2a865d7-512"
-                                  alt=""
-                                  height={60}
-                                  width={60}
-                                />
-                              </div>
-                            </div>
+                        <div style={{ textAlign: "left" }}>
+                          <div
+                            style={{
+                              marginBottom: "2px",
+                              paddingLeft: "20px",
+                              marginRight: "10px",
+                              fontWeight: "bold",
+                            }}
+                          >
+                            {e.user}
                           </div>
                           <div
                             style={{
-                              marginLeft: "10px",
                               display: "flex",
-                              marginBottom: "5px",
-                              right: "0",
+                              marginBottom: "20px",
+                              paddingLeft: "20px",
+                              marginRight: "10px",
                             }}
                           >
-                            <span>{e.time}</span>
+                            <div>
+                              <Image
+                                src="https://ca.slack-edge.com/T0266FRGM-U2Q173U05-g863c2a865d7-512"
+                                alt=""
+                                height={60}
+                                width={60}
+                                layout="fixed"
+                              />
+                            </div>
+                            <div>
+                              <div
+                                style={{
+                                  marginLeft: "20px",
+                                  fontSize: "20px",
+                                  display: "inline-block",
+                                  margin: "10px 20px",
+                                  padding: "10px 20px",
+                                  background: "skyblue",
+                                  textAlign: "left",
+                                  borderRadius: "12px",
+                                }}
+                              >
+                                {e.message}
+                              </div>
+                              <div
+                                style={{
+                                  marginLeft: "10px",
+                                  display: "flex",
+                                  alignItems: "center",
+                                  marginBottom: "5px",
+                                }}
+                              >
+                                <span>{e.time}</span>
+                              </div>
+                            </div>
                           </div>
                         </div>
                       ) : (
@@ -232,13 +282,29 @@ export default function Main() {
                               marginRight: "10px",
                             }}
                           >
-                            <Image
-                              src="https://ca.slack-edge.com/T0188513NTW-U01867WD8GK-ga631e27835b-72"
-                              alt=""
-                              height={60}
-                              width={60}
-                            />
                             <div>
+                              <Image
+                                src="https://ca.slack-edge.com/T0188513NTW-U01867WD8GK-ga631e27835b-72"
+                                alt=""
+                                height={60}
+                                width={60}
+                              />
+                            </div>
+                            <div>
+                              <div
+                                style={{
+                                  marginLeft: "20px",
+                                  fontSize: "20px",
+                                  display: "inline-block",
+                                  margin: "10px 20px",
+                                  padding: "10px 20px",
+                                  background: "orange",
+                                  textAlign: "left",
+                                  borderRadius: "12px",
+                                }}
+                              >
+                                {e.message}
+                              </div>
                               <div
                                 style={{
                                   marginLeft: "10px",
@@ -248,15 +314,6 @@ export default function Main() {
                                 }}
                               >
                                 <span>{e.time}</span>
-                              </div>
-                              <div
-                                style={{
-                                  marginLeft: "20px",
-                                  color: "black",
-                                  fontSize: "20px",
-                                }}
-                              >
-                                {e.message}
                               </div>
                             </div>
                           </div>
@@ -274,46 +331,45 @@ export default function Main() {
             </div>
           </div>
 
-          <div>
-            <div
+          {/* テキストボックス */}
+          <div
+            style={{
+              position: "fixed",
+              bottom: "0",
+              display: "column",
+            }}
+          >
+            <textarea
+              placeholder="メッセージを入力してください"
+              onChange={(e) => setValue(e.target.value)}
+              value={value}
               style={{
-                position: "absolute",
-                bottom: "0",
-                display: "column",
+                fontSize: "20px",
+                width: "60vw",
+                marginLeft: "10px",
+                height: "100px",
+                padding: "5px",
+                marginBottom: "-50px",
               }}
+            ></textarea>
+            <button
+              style={{
+                fontSize: "15pt",
+                width: "10vw",
+                height: "100px",
+                marginLeft: "20px",
+                borderRadius: "40px",
+                cursor: "pointer",
+                padding: "12px 12px",
+                color: "purple",
+                background: "white",
+                border: "1px solid black",
+                marginBottom: "30px",
+              }}
+              onClick={handleSubmit}
             >
-              <textarea
-                placeholder="メッセージを入力してください"
-                onChange={(e) => setValue(e.target.value)}
-                value={value}
-                style={{
-                  fontSize: "20px",
-                  width: "70vw",
-                  marginLeft: "10px",
-                  height: "100px",
-                  padding: "5px",
-                  marginBottom: "-50px",
-                }}
-              ></textarea>
-              <button
-                style={{
-                  fontSize: "15pt",
-                  width: "10vw",
-                  height: "70px",
-                  marginLeft: "20px",
-                  borderRadius: "50px",
-                  cursor: "pointer",
-                  padding: "12px 12px",
-                  color: "purple",
-                  background: "white",
-                  border: "1px solid black",
-                  marginBottom: "30px",
-                }}
-                onClick={handleSubmit}
-              >
-                送信する
-              </button>
-            </div>
+              送信する
+            </button>
           </div>
         </div>
       </div>
