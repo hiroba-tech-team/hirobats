@@ -19,8 +19,7 @@ interface User {
   id: number;
   name: string;
   avatar: string;
-  channel: string;
-  color: string;
+  channel: string[];
   login: boolean;
 }
 
@@ -30,9 +29,7 @@ export default function Main() {
     { id: 1, name: "打合せ", desc: "いつ始めましょうか" },
     { id: 2, name: "定例", desc: "いつもの時間で" },
   ]);
-  const [current, setCurrent] = useState<number>(0);
-  const [user, setUser] = useState<string>("ひろばくん"); //　ユーザーが変わるとアバターと吹き出しの色が変わる
-  const [value, setValue] = useState<string>("");
+  const [users, setUsers] = useState<string>("ひろばくん");
   const [dialog, setDialog] = useState<Dialog[]>([
     {
       id: 0,
@@ -42,34 +39,27 @@ export default function Main() {
     },
     { id: 0, message: "はじめまして", time: "16:10", user: "ひろばさん" },
     { id: 1, message: "ありがとう", time: "17:10", user: "ひろばくん" },
-    { id: 1, message: "どういたしまして", time: "18:10", user: "ひろばさん" },
+    { id: 1, message: "どういたしまして", time: "18:10", user: "ひろばくん" },
     { id: 2, message: "こんにちは", time: "19:10", user: "ひろばくん" },
     { id: 2, message: "さようなら", time: "20:10", user: "ひろばくん" },
   ]);
-
-  const ref = createRef<HTMLDivElement>();
+  const [current, setCurrent] = useState<number>(0); // 現在の選択されているチャンネル
+  const [value, setValue] = useState<string>(""); // テキストボックスに入力されている値
+  const ref = createRef<HTMLDivElement>(); // メッセージエリアを参照するためのマーカー
 
   const handleOnClick = (e: number) => {
     setCurrent(e);
   };
 
   const handleSubmit = () => {
-    dialog.push({ id: current, message: value, time: "21:20", user: user });
+    dialog.push({ id: current, message: value, time: "21:20", user: users});
     setDialog(dialog);
     setValue("");
   };
 
-  const changePerson = () => {
-    if (user === "ひろばくん") {
-      setUser("ひろばさん");
-    } else {
-      setUser("ひろばくん");
-    }
-  };
-
   useEffect(() => {
     ref!.current!.scrollIntoView({
-      // ! undefinedやnullにはならない
+      // ! 表記はundefinedやnullにはならないということ
       behavior: "smooth",
       block: "end",
     });
@@ -77,12 +67,14 @@ export default function Main() {
 
   return (
     <>
+      {/* マージンがデフォルトで8pxになるためグローバルに0を設定 */}
       <style jsx global>{`
         body {
           margin: 0px;
           padding: 0px;
         }
       `}</style>
+
       <div style={{ display: "flex" }}>
         {/* サイドバー */}
         <div
@@ -103,10 +95,10 @@ export default function Main() {
             }}
           >
             <Image
-              src="https://www.pinclipart.com/picdir/big/15-159747_onlinelabels-clip-art-free-female-avatar-icons-png.png"
+              src="https://www.pinclipart.com/picdir/big/155-1559325_female-avatar-clipart.png"
               alt=""
-              height={40}
-              width={40}
+              height={50}
+              width={50}
             />
             <div
               style={{
@@ -115,9 +107,8 @@ export default function Main() {
                 marginBottom: "20px",
                 fontSize: "20px",
               }}
-              onClick={() => changePerson()}
             >
-              {user}
+              {users}
             </div>
           </div>
           <hr />
@@ -205,7 +196,7 @@ export default function Main() {
                 if (e.id === current) {
                   return (
                     <div key={idx}>
-                      {user === e.user ? (
+                      {users === e.user ? (
                         <div style={{ textAlign: "left" }}>
                           <div
                             style={{
@@ -323,11 +314,7 @@ export default function Main() {
                   );
                 }
               })}
-              {dialog.length === 0 && (
-                <div style={{ textAlign: "center", marginTop: 20 }}>
-                  メッセージがありません
-                </div>
-              )}
+              {dialog.length === 0 && <div style={{ textAlign: "center", marginTop: 20 }}>メッセージがありません</div>}
             </div>
           </div>
 
@@ -345,7 +332,7 @@ export default function Main() {
               value={value}
               style={{
                 fontSize: "20px",
-                width: "60vw",
+                width: "65vw",
                 marginLeft: "10px",
                 height: "100px",
                 padding: "5px",
