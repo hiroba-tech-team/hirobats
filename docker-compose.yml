@@ -1,0 +1,32 @@
+version: '3.8'
+
+services:
+  # バックエンド
+  #api:
+    #build:
+    #  context: ./api
+    #environment:
+    #  - 'PORT=50090'
+    #expose:
+    #  - '50090'
+    #restart: always
+  # フロントエンド
+  ui:
+    build:
+      context: ./ui
+    #depends_on:
+    #  - api
+    environment:
+      - 'PORT=50080'
+    expose:
+      - '50080'
+    #restart: always
+  # HTTPサーバ
+  nginx:
+    build:
+      context: ./nginx
+    depends_on:
+      - ui
+    ports:
+      - '443:443'
+    #restart: always
