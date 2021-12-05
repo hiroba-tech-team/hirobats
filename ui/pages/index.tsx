@@ -124,7 +124,7 @@ export default function Main() {
             >
               チャンネル一覧
             </div>
-            {channels.map((channel) => {
+            {channels.map((channel: any) => {
               return (
                 <div key={channel.id}>
                   <ul
@@ -192,7 +192,7 @@ export default function Main() {
             }}
           >
             <div ref={ref} style={{ paddingBottom: "90px" }}>
-              {dialog.map((e, idx) => {
+              {dialog.map((e: any, idx: any) => {
                 if (e.id === current) {
                   return (
                     <div key={idx}>
