@@ -23,14 +23,20 @@ interface User {
   login: boolean;
 }
 
-
 export default function Main() {
   const [channels, setChannels] = useState<Channel[]>([
     { id: 0, name: "#サンプル", desc: "チャンネルの説明です" },
     { id: 1, name: "打合せ", desc: "いつ始めましょうか" },
     { id: 2, name: "定例", desc: "いつもの時間で" },
   ]);
-  const [users, setUsers] = useState<string>("ひろばくん");
+  // ユーザーの初期設定
+  const [users, setUsers] = useState<User>({
+    id: 0,
+    name: "",
+    avatar: "",
+    channel: [],
+    login: false,
+  });
   const [dialog, setDialog] = useState<Dialog[]>([
     {
       id: 0,
@@ -51,12 +57,28 @@ export default function Main() {
   const handleOnClick = (e: number) => {
     setCurrent(e);
   };
-
   const handleSubmit = () => {
-    dialog.push({ id: current, message: value, time: "21:20", user: users});
+    dialog.push({ id: current, message: value, time: "21:20", user: users.name });
     setDialog(dialog);
     setValue("");
   };
+  // テスト用にユーザーデータを定義
+  let testUser = [
+    {
+      id: 0,
+      name: "ひろばくん",
+      avatar: "https://www.pinclipart.com/picdir/big/155-1559316_male-avatar-clipart.png",
+      channel: ["#サンプル", "打合せ", "定例"],
+      login: true,
+    },
+    {
+      id: 1,
+      name: "ひろばさん",
+      avatar: "https://www.pinclipart.com/picdir/big/155-1559316_male-avatar-clipart.png",
+      channel: ["#サンプル", "打合せ", "定例"],
+      login: true,
+    },
+  ];
 
   useEffect(() => {
     ref!.current!.scrollIntoView({
@@ -65,6 +87,11 @@ export default function Main() {
       block: "end",
     });
   }, [ref]);
+
+  // 読み込み時にユーザーを 変数users にセット
+  useEffect(() => {
+    setUsers(testUser[0]);
+  }, []);
 
   return (
     <>
@@ -109,7 +136,7 @@ export default function Main() {
                 fontSize: "20px",
               }}
             >
-              {users}
+              {users.name}
             </div>
           </div>
           <hr />
@@ -193,11 +220,11 @@ export default function Main() {
             }}
           >
             <div ref={ref} style={{ paddingBottom: "90px" }}>
-              {dialog.map((e: Dialog, idx : number) => {
+              {dialog.map((e: Dialog, idx: number) => {
                 if (e.id === current) {
                   return (
                     <div key={idx}>
-                      {users === e.user ? (
+                      {users.name === e.user ? (
                         <div style={{ textAlign: "left" }}>
                           <div
                             style={{
