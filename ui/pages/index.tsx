@@ -23,6 +23,7 @@ interface User {
   login: boolean;
 }
 
+
 export default function Main() {
   const [channels, setChannels] = useState<Channel[]>([
     { id: 0, name: "#サンプル", desc: "チャンネルの説明です" },
@@ -124,7 +125,7 @@ export default function Main() {
             >
               チャンネル一覧
             </div>
-            {channels.map((channel: any) => {
+            {channels.map((channel: Channel) => {
               return (
                 <div key={channel.id}>
                   <ul
@@ -192,7 +193,7 @@ export default function Main() {
             }}
           >
             <div ref={ref} style={{ paddingBottom: "90px" }}>
-              {dialog.map((e: any, idx: any) => {
+              {dialog.map((e: Dialog, idx : number) => {
                 if (e.id === current) {
                   return (
                     <div key={idx}>
