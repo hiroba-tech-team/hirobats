@@ -62,6 +62,9 @@ export default function Main() {
     setDialog(dialog);
     setValue("");
   };
+  const changeUser = (e: number) => {
+    setUsers(testUser[e]);
+  }
   // テスト用にユーザーデータを定義
   let testUser = [
     {
@@ -74,7 +77,7 @@ export default function Main() {
     {
       id: 1,
       name: "ひろばさん",
-      avatar: "https://www.pinclipart.com/picdir/big/155-1559316_male-avatar-clipart.png",
+      avatar: "https://www.pinclipart.com/picdir/big/155-1559325_female-avatar-clipart.png",
       channel: ["#サンプル", "打合せ", "定例"],
       login: true,
     },
@@ -122,12 +125,12 @@ export default function Main() {
               marginRight: "15px",
             }}
           >
-            <Image
-              src="https://www.pinclipart.com/picdir/big/155-1559325_female-avatar-clipart.png"
+            {users.avatar ? (<Image
+              src={users.avatar}
               alt=""
               height={50}
               width={50}
-            />
+            />) : null}
             <div
               style={{
                 marginTop: "25px",
@@ -173,6 +176,46 @@ export default function Main() {
                       onClick={() => handleOnClick(channel.id)}
                     >
                       {channel.name}
+                    </li>
+                  </ul>
+                </div>
+              );
+            })}
+          </div>
+          {/* ユーザー変更テストのため */}
+          <br/>
+          <div>
+            <div
+              style={{
+                fontWeight: "bold",
+                color: "white",
+                fontSize: "18px",
+                padding: "10px 15px",
+              }}
+            >
+              ユーザー変更テスト
+            </div>
+            {testUser.map((testUser: User) => {
+              return (
+                <div key={testUser.id}>
+                  <ul
+                    style={{
+                      margin: "0",
+                      padding: "0",
+                      color: "white",
+                    }}
+                  >
+                    <li
+                      style={{
+                        paddingLeft: "20px",
+                        paddingTop: "15px",
+                        color: "white",
+                        fontSize: "20px",
+                        cursor: "pointer",
+                      }}
+                      onClick={() => changeUser(testUser.id)}
+                    >
+                      {testUser.name}
                     </li>
                   </ul>
                 </div>
