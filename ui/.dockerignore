@@ -1,0 +1,8 @@
+# Directories
+.next
+node_modules
+
+# Files
+.dockerignore
+Dockerfile
+README.md

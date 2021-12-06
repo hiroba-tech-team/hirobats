@@ -37,6 +37,6 @@ yarn-error.log*
 *.tsbuildinfo
 
 # SSL鍵ファイル
-nginx/*.cer
-nginx/*.key
-nginx/*.key.pass
+*.cer
+*.key
+*.key.pass

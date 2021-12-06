@@ -14,32 +14,30 @@ RUN apt-get update \
   && apt-get autoremove -y
 
 # 基本設定のコピー
-COPY nginx.conf /etc/nginx/nginx.conf
-RUN rm /etc/nginx/conf.d/default.conf
+ENV CONFIG_PATH=/etc/nginx
+COPY nginx.conf $CONFIG_PATH/nginx.conf
+RUN rm $CONFIG_PATH/conf.d/default.conf
 
 #----------------------------
 # SSL認証の取得
 #----------------------------
-## 設定のコピー
-#COPY sslcert.conf /etc/nginx/conf.d/
+# 設定のコピー
+#COPY sslcert.conf $CONFIG_PATH/conf.d/
 
-## SSL認証ファイルの設定
-#RUN mkdir -p /usr/share/nginx/html/.well-known/pki-validation
-#COPY index.html /usr/share/nginx/html/
-#COPY fileauth.txt /usr/share/nginx/html/.well-known/pki-validation/
+# SSL認証ファイルの設定
+#ENV ROOT=/usr/share/nginx/html
+#RUN mkdir -p $ROOT/.well-known/pki-validation
+#COPY index.html $ROOT/
+#COPY fileauth.txt $ROOT/.well-known/pki-validation/
 
 #----------------------------
 # 本番用nginx設定
 #----------------------------
 # SSL用認証用フォルダの作成
-RUN mkdir /etc/nginx/ssl \
-  && chmod 700 /etc/nginx/ssl
-
-# SSL認証用ファイルのコピー
-COPY www_hiroba_tech.cer /etc/nginx/ssl/
-COPY www_hiroba_tech.key /etc/nginx/ssl/
-COPY www_hiroba_tech.key.pass /etc/nginx/ssl/
-RUN chmod 600 /etc/nginx/ssl/*
+RUN mkdir -p $CONFIG_PATH/ssl
+COPY ssl $CONFIG_PATH/ssl
+RUN chmod 700 $CONFIG_PATH/ssl && \
+  chmod 600 $CONFIG_PATH/ssl/*
 
 # 設定のコピー
-COPY hiroba_tech.conf /etc/nginx/conf.d/
+COPY hiroba_tech.conf $CONFIG_PATH/conf.d/
