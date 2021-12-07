@@ -29,7 +29,14 @@ export default function Main() {
     { id: 1, name: "打合せ", desc: "いつ始めましょうか" },
     { id: 2, name: "定例", desc: "いつもの時間で" },
   ]);
-  const [users, setUsers] = useState<string>("ひろばくん");
+  // ユーザーの初期設定
+  const [users, setUsers] = useState<User>({
+    id: 0,
+    name: "",
+    avatar: "",
+    channel: [],
+    login: false,
+  });
   const [dialog, setDialog] = useState<Dialog[]>([
     {
       id: 0,
@@ -50,12 +57,31 @@ export default function Main() {
   const handleOnClick = (e: number) => {
     setCurrent(e);
   };
-
   const handleSubmit = () => {
-    dialog.push({ id: current, message: value, time: "21:20", user: users});
+    dialog.push({ id: current, message: value, time: "21:20", user: users.name });
     setDialog(dialog);
     setValue("");
   };
+  const changeUser = (e: number) => {
+    setUsers(testUser[e]);
+  }
+  // テスト用にユーザーデータを定義
+  let testUser = [
+    {
+      id: 0,
+      name: "ひろばくん",
+      avatar: "https://www.pinclipart.com/picdir/big/155-1559316_male-avatar-clipart.png",
+      channel: ["#サンプル", "打合せ", "定例"],
+      login: true,
+    },
+    {
+      id: 1,
+      name: "ひろばさん",
+      avatar: "https://www.pinclipart.com/picdir/big/155-1559325_female-avatar-clipart.png",
+      channel: ["#サンプル", "打合せ", "定例"],
+      login: true,
+    },
+  ];
 
   useEffect(() => {
     ref!.current!.scrollIntoView({
@@ -64,6 +90,11 @@ export default function Main() {
       block: "end",
     });
   }, [ref]);
+
+  // 読み込み時にユーザーを 変数users にセット
+  useEffect(() => {
+    setUsers(testUser[0]);
+  }, []);
 
   return (
     <>
@@ -94,12 +125,12 @@ export default function Main() {
               marginRight: "15px",
             }}
           >
-            <Image
-              src="https://www.pinclipart.com/picdir/big/155-1559325_female-avatar-clipart.png"
+            {users.avatar ? (<Image
+              src={users.avatar}
               alt=""
               height={50}
               width={50}
-            />
+            />) : null}
             <div
               style={{
                 marginTop: "25px",
@@ -108,7 +139,7 @@ export default function Main() {
                 fontSize: "20px",
               }}
             >
-              {users}
+              {users.name}
             </div>
           </div>
           <hr />
@@ -124,7 +155,7 @@ export default function Main() {
             >
               チャンネル一覧
             </div>
-            {channels.map((channel) => {
+            {channels.map((channel: Channel) => {
               return (
                 <div key={channel.id}>
                   <ul
@@ -145,6 +176,46 @@ export default function Main() {
                       onClick={() => handleOnClick(channel.id)}
                     >
                       {channel.name}
+                    </li>
+                  </ul>
+                </div>
+              );
+            })}
+          </div>
+          {/* ユーザー変更テストのため */}
+          <br/>
+          <div>
+            <div
+              style={{
+                fontWeight: "bold",
+                color: "white",
+                fontSize: "18px",
+                padding: "10px 15px",
+              }}
+            >
+              ユーザー変更テスト
+            </div>
+            {testUser.map((testUser: User) => {
+              return (
+                <div key={testUser.id}>
+                  <ul
+                    style={{
+                      margin: "0",
+                      padding: "0",
+                      color: "white",
+                    }}
+                  >
+                    <li
+                      style={{
+                        paddingLeft: "20px",
+                        paddingTop: "15px",
+                        color: "white",
+                        fontSize: "20px",
+                        cursor: "pointer",
+                      }}
+                      onClick={() => changeUser(testUser.id)}
+                    >
+                      {testUser.name}
                     </li>
                   </ul>
                 </div>
@@ -192,11 +263,11 @@ export default function Main() {
             }}
           >
             <div ref={ref} style={{ paddingBottom: "90px" }}>
-              {dialog.map((e, idx) => {
+              {dialog.map((e: Dialog, idx: number) => {
                 if (e.id === current) {
                   return (
                     <div key={idx}>
-                      {users === e.user ? (
+                      {users.name === e.user ? (
                         <div style={{ textAlign: "left" }}>
                           <div
                             style={{
