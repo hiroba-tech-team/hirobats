@@ -1,17 +1,16 @@
-FROM nginx:stable
+FROM nginx:stable-alpine
 MAINTAINER srtkkou<srtkkou@outlook.jp>
 
-# ロケールをja_JPに変更(Debian)
-RUN apt-get update \
-  && apt-get install -y \
-    locales \
-  && echo "ja_JP.UTF-8 UTF-8" >> /etc/locale.gen \
-  && locale-gen \
-  && update-locale LANG=ja_JP.UTF-8 \
-  && ln -sf /usr/share/zoneinfo/Asia/Tokyo /etc/localtime \
-  && dpkg-reconfigure -f noninteractive tzdata \
-  && apt-get autoclean -y \
-  && apt-get autoremove -y
+# ロケールをja_JPに変更(Alpine)
+RUN apk update \
+  && apk add tzdata \
+  && cp /usr/share/zoneinfo/Asia/Tokyo /etc/localtime \
+  && echo "Asia/Tokyo" > /etc/timezone
+
+ENV TZ "Asia/Tokyo"
+ENV LANG ja_JP.UTF-8
+ENV LANGUAGE ja_JP.UTF-8
+ENV LC_ALL ja_JP.UTF-8
 
 # 基本設定のコピー
 ENV CONFIG_PATH=/etc/nginx
