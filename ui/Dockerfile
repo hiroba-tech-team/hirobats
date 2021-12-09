@@ -1,4 +1,4 @@
-FROM node:latest
+FROM node:current-alpine
 MAINTAINER srtkkou<srtkkou@outlook.jp>
 
 # アプリ配置ディレクトリの設定
@@ -9,9 +9,9 @@ WORKDIR $ROOT
 # ソースコードのコピー
 COPY ./ $ROOT/
 
-# 本番環境のコンパイル
+# 本番環境のビルド
 RUN yarn install && \
-  yarn build
+  NODE_ENV=production yarn build
 
 # サービス開始スクリプトの登録
-CMD ["node_modules/.bin/next", "start"]
+CMD ["yarn", "next", "start"]
