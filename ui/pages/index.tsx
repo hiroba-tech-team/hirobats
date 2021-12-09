@@ -64,7 +64,7 @@ export default function Main() {
   };
   const changeUser = (e: number) => {
     setUsers(testUser[e]);
-  }
+  };
   // テスト用にユーザーデータを定義
   let testUser = [
     {
@@ -94,6 +94,7 @@ export default function Main() {
   // 読み込み時にユーザーを 変数users にセット
   useEffect(() => {
     setUsers(testUser[0]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
@@ -125,12 +126,7 @@ export default function Main() {
               marginRight: "15px",
             }}
           >
-            {users.avatar ? (<Image
-              src={users.avatar}
-              alt=""
-              height={50}
-              width={50}
-            />) : null}
+            {users.avatar ? <Image src={users.avatar} alt="" height={50} width={50} /> : null}
             <div
               style={{
                 marginTop: "25px",
@@ -183,7 +179,7 @@ export default function Main() {
             })}
           </div>
           {/* ユーザー変更テストのため */}
-          <br/>
+          <br />
           <div>
             <div
               style={{
