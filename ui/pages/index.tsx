@@ -13,6 +13,7 @@ interface Dialog {
   message: string;
   time: string;
   user: string;
+  avatar: string;
 }
 // 変数user の型（未定）
 interface User {
@@ -43,12 +44,43 @@ export default function Main() {
       message: "こんにちは",
       time: "15:10",
       user: "ひろばくん",
+      avatar: "https://www.pinclipart.com/picdir/big/155-1559316_male-avatar-clipart.png",
     },
-    { id: 0, message: "はじめまして", time: "16:10", user: "ひろばさん" },
-    { id: 1, message: "ありがとう", time: "17:10", user: "ひろばくん" },
-    { id: 1, message: "どういたしまして", time: "18:10", user: "ひろばくん" },
-    { id: 2, message: "こんにちは", time: "19:10", user: "ひろばくん" },
-    { id: 2, message: "さようなら", time: "20:10", user: "ひろばくん" },
+    {
+      id: 0,
+      message: "はじめまして",
+      time: "16:10",
+      user: "ひろばさん",
+      avatar: "https://www.pinclipart.com/picdir/big/155-1559325_female-avatar-clipart.png ",
+    },
+    {
+      id: 1,
+      message: "ありがとう",
+      time: "17:10",
+      user: "ひろばくん",
+      avatar: "https://www.pinclipart.com/picdir/big/155-1559316_male-avatar-clipart.png",
+    },
+    {
+      id: 1,
+      message: "どういたしまして",
+      time: "18:10",
+      user: "ひろばくん",
+      avatar: "https://www.pinclipart.com/picdir/big/155-1559316_male-avatar-clipart.png",
+    },
+    {
+      id: 2,
+      message: "こんにちは",
+      time: "19:10",
+      user: "ひろばくん",
+      avatar: "https://www.pinclipart.com/picdir/big/155-1559316_male-avatar-clipart.png",
+    },
+    {
+      id: 2,
+      message: "さようなら",
+      time: "20:10",
+      user: "ひろばさん",
+      avatar: "https://www.pinclipart.com/picdir/big/155-1559325_female-avatar-clipart.png",
+    },
   ]);
   const [current, setCurrent] = useState<number>(0); // 現在の選択されているチャンネル
   const [value, setValue] = useState<string>(""); // テキストボックスに入力されている値
@@ -58,7 +90,7 @@ export default function Main() {
     setCurrent(e);
   };
   const handleSubmit = () => {
-    dialog.push({ id: current, message: value, time: "21:20", user: users.name });
+    dialog.push({ id: current, message: value, time: "21:20", user: users.name, avatar: users.avatar });
     setDialog(dialog);
     setValue("");
   };
@@ -110,6 +142,11 @@ export default function Main() {
             <ul id="nav-mobile" className="right">
               <li>
                 <a className="white-text" href="#">
+                  ch: {channels[current].name}
+                </a>
+              </li>
+              <li>
+                <a className="white-text" href="#">
                   <i className="material-icons">settings</i>
                 </a>
               </li>
@@ -124,8 +161,8 @@ export default function Main() {
         {/* グリッド表示のためclassをrowに設定 */}
         <div className="row">
           {/* サイドバー */}
-          <div className="side-area col s12 m3 l3 purple darken-1">
-            <div className="user">
+          <div className="side-area col s12 m2 l2 purple darken-1">
+            <div className="user-container">
               <div className="user-avatar">
                 {users.avatar ? (
                   <Image className="responsive-img" src={users.avatar} alt="" height={70} width={70} />
@@ -177,13 +214,10 @@ export default function Main() {
           {/* モーダル */}
           <div id="modal1" className="modal">
             <div className="modal-content">
-              <a className="black-text">追加したいチャンネルを選んでね</a>
+              <a className="modal-text">追加したいチャンネルを選んでね</a>
             </div>
             <div className="modal-footer">
-              <a
-                href="#!"
-                className="modal-close purple darken-2 z-depth-2 waves-effect waves-green btn white-text"
-              >
+              <a href="#!" className="modal-close purple darken-2 z-depth-2 waves-effect waves-green btn white-text">
                 決定
               </a>
             </div>
@@ -196,45 +230,37 @@ export default function Main() {
                   return (
                     <div key={idx}>
                       {users.name === e.user ? (
-                        <div>
-                          <div className="black-text">{e.user}</div>
+                        <div className="message-container">
                           <div>
-                            <div>
-                              <Image
-                                className="responsive-img"
-                                src="https://ca.slack-edge.com/T0266FRGM-U2Q173U05-g863c2a865d7-512"
-                                alt=""
-                                height={60}
-                                width={60}
-                              />
-                            </div>
-                            <div className="right">
-                              <div className="black-text">{e.message}</div>
-                              <div className="right">
-                                <span className="black-text">{e.time}</span>
-                              </div>
-                            </div>
+                            <Image
+                              className="e-image responsive-img"
+                              src="https://ca.slack-edge.com/T0266FRGM-U2Q173U05-g863c2a865d7-512"
+                              alt=""
+                              height={60}
+                              width={60}
+                            />
+                            <div className="e-user black-text">{e.user}</div>
+                          </div>
+                          <div>
+                            <div className="e-message black-text balloon">{e.message}</div>
+                            <div className="e-time black-text">{e.time}</div>
                           </div>
                         </div>
                       ) : (
-                        <div>
-                          <div className="black-text">{e.user}</div>
+                        <div className="message-container">
                           <div>
-                            <div>
-                              <Image
-                                className="responsive-img"
-                                src="https://ca.slack-edge.com/T0188513NTW-U01867WD8GK-ga631e27835b-72"
-                                alt=""
-                                height={60}
-                                width={60}
-                              />
-                            </div>
-                            <div>
-                              <div className="black-text">{e.message}</div>
-                              <div>
-                                <span className="black-text">{e.time}</span>
-                              </div>
-                            </div>
+                            <Image
+                              className="e-image responsive-img"
+                              src="https://ca.slack-edge.com/T0266FRGM-U2Q173U05-g863c2a865d7-512"
+                              alt=""
+                              height={60}
+                              width={60}
+                            />
+                            <div className="e-user black-text">{e.user}</div>
+                          </div>
+                          <div>
+                            <div className="e-message black-text balloon">{e.message}</div>
+                            <div className="e-time black-text">{e.time}</div>
                           </div>
                         </div>
                       )}
@@ -246,7 +272,7 @@ export default function Main() {
             </div>
           </div>
           {/* テキストエリア */}
-          <div className="text-area col s12 m9 l9">
+          <div className="text-area col s12 m10 l10">
             <div className="input-field col s10">
               <i className="material-icons prefix">mode_edit</i>
               <textarea
@@ -266,8 +292,8 @@ export default function Main() {
           </div>
         </div>
         {/* フッター */}
-        <footer className="page-footer purple darken-2">
-          <div className="copy-right white-text">© 2021 hiroba.tech</div>
+        <footer className="purple darken-2">
+          <div className="copy-right">© 2021 hiroba.tech</div>
         </footer>
       </div>
     </>
