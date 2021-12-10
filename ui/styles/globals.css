@@ -14,21 +14,16 @@ a {
 * {
   box-sizing: border-box;
 }
-
 /* 以下追記したもの */
-.main {
-  display: "flex";
-}
 nav {
   height: 7vh;
+  position: "fixed";
 }
 footer {
   height: 3vh;
+  position: "fixed";
 }
-.container {
-  height: 100%;
-  width: 100%;
-}
+
 .row {
   margin: 0;
   padding: 0;
@@ -40,21 +35,23 @@ footer {
   overflow: "auto";
 }
 .message-area {
-  height: calc(80vh - 1rem);
+  position: "fixed";
+  display: flex;
+  height: calc(80vh - 2rem);
   scroll-behavior: "auto";
-  overflow: "auto";
+  overflow: "scroll";
+  border-bottom: 0.1rem solid #8e24aa;
 }
 .text-area {
+  position: "fixed";
   height: 10vh;
-  border-top: 0.1rem solid #8e24aa;
 }
 .logo {
-  margin-left: 1rem;
+  margin-left: 2rem;
   position: absolute;
   color: #fff;
   display: inline-block;
-  font-size: 2rem;
-  padding: 0;
+  font-size: 3rem;
 }
 .user-container {
   display: flex;
@@ -78,8 +75,6 @@ footer {
 .e-image {
   display: inline-block;
 }
-.e-user {
-}
 .e-time {
   display: inline-block;
   margin-left: 1rem;
@@ -88,11 +83,12 @@ textarea.materialize-textarea {
   font-size: 1.2rem;
 }
 .input-field {
-  margin-top: 2em;
+  margin-top: 2rem;
 }
 .btn {
-  margin-top: 2rem;
   border-radius: 0.3rem;
+  margin-top: 2em;
+  position: relative;
 }
 .white-text {
   font-size: 1.5rem;

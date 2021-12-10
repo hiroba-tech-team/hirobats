@@ -141,7 +141,7 @@ export default function Main() {
             </a>
             <ul id="nav-mobile" className="right">
               <li>
-                <a className="white-text" href="#">
+                <a className="white-text purple darken-1" href="#">
                   ch: {channels[current].name}
                 </a>
               </li>
@@ -224,7 +224,7 @@ export default function Main() {
             </div>
           </div>
           {/* メッセージエリア */}
-          <div className="message-area col s12 m9 l9">
+          <div className="message-area col s12 m10 l10">
             <div ref={ref}>
               {dialog.map((e: Dialog, idx: number) => {
                 if (e.id === current) {
@@ -234,7 +234,7 @@ export default function Main() {
                         <div className="message-container">
                           <div>
                             <Image className="e-image responsive-img" src={e.avatar} alt="" height={60} width={60} />
-                            <div className="e-user black-text">{e.user}</div>
+                            <div className="black-text">{e.user}</div>
                           </div>
                           <div>
                             <div className="e-message black-text balloon">{e.message}</div>
@@ -245,7 +245,7 @@ export default function Main() {
                         <div className="message-container">
                           <div>
                             <Image className="e-image responsive-img" src={e.avatar} alt="" height={60} width={60} />
-                            <div className="e-user black-text">{e.user}</div>
+                            <div className="black-text">{e.user}</div>
                           </div>
                           <div>
                             <div className="e-message black-text balloon">{e.message}</div>
@@ -261,7 +261,7 @@ export default function Main() {
             </div>
           </div>
           {/* テキストエリア */}
-          <div className="text-area col s12 m10 l10">
+          <div className="text-area col s12 m9 l9">
             <div className="input-field col s10">
               <i className="material-icons prefix">mode_edit</i>
               <textarea
@@ -272,12 +272,18 @@ export default function Main() {
                 value={value}
               ></textarea>
             </div>
-            <button
+            {value ? (<button
               className="btn waves-effect waves-light col s2 right purple darken-1 white-text"
               onClick={handleSubmit}
             >
               送信
-            </button>
+            </button>) : (<button
+              className="btn waves-effect waves-light col s2 right purple darken-1 white-text"
+                onClick={handleSubmit}
+                disabled
+            >
+              送信
+            </button>)}
           </div>
         </div>
         {/* フッター */}
