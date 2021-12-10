@@ -161,25 +161,26 @@ export default function Main() {
         {/* グリッド表示のためclassをrowに設定 */}
         <div className="row">
           {/* サイドバー */}
-          <div className="side-area col s12 m2 l2 purple darken-1">
+          <div className="side-area col s12 m2 l2 purple darken-1 hide-on-med-and-down">
             <div className="user-container">
               <div className="user-avatar">
                 {users.avatar ? (
                   <Image className="responsive-img" src={users.avatar} alt="" height={70} width={70} />
                 ) : null}
               </div>
+              {/* ディスプレイ幅によって"hide-on-med-and-down" */}
               <div className="user-name white-text">{users.name}</div>
             </div>
             <div>
               <div className="white-text">
-                チャンネル一覧
+                ch追加
                 <a className="btn-floating waves-effect waves-light modal-trigger" href="#modal1">
                   <i className="material-icons purple darken-2">add</i>
                 </a>
               </div>
               {channels.map((channel: Channel) => {
                 return (
-                  <div className="channel-list" key={channel.id}>
+                  <div className="channel-list hide-on-med-and-down" key={channel.id}>
                     <ul>
                       <li
                         className="channel-name purple darken-2 z-depth-2 white-text"
@@ -192,9 +193,9 @@ export default function Main() {
                 );
               })}
             </div>
-            {/* ユーザー変更テストのため */}
-            <div>
-              <div className="user-change white-text">ユーザー変更テスト</div>
+            {/* ユーザー変更テストのため　ディスプレイ幅によって"hide-on-med-and-down" */}
+            <div className="hide-on-med-and-down">
+              <div className="user-change white-text">ユーザー変更</div>
               {testUser.map((testUser: User) => {
                 return (
                   <div className="channel-list" key={testUser.id}>
@@ -232,13 +233,7 @@ export default function Main() {
                       {users.name === e.user ? (
                         <div className="message-container">
                           <div>
-                            <Image
-                              className="e-image responsive-img"
-                              src="https://ca.slack-edge.com/T0266FRGM-U2Q173U05-g863c2a865d7-512"
-                              alt=""
-                              height={60}
-                              width={60}
-                            />
+                            <Image className="e-image responsive-img" src={e.avatar} alt="" height={60} width={60} />
                             <div className="e-user black-text">{e.user}</div>
                           </div>
                           <div>
@@ -249,13 +244,7 @@ export default function Main() {
                       ) : (
                         <div className="message-container">
                           <div>
-                            <Image
-                              className="e-image responsive-img"
-                              src="https://ca.slack-edge.com/T0266FRGM-U2Q173U05-g863c2a865d7-512"
-                              alt=""
-                              height={60}
-                              width={60}
-                            />
+                            <Image className="e-image responsive-img" src={e.avatar} alt="" height={60} width={60} />
                             <div className="e-user black-text">{e.user}</div>
                           </div>
                           <div>

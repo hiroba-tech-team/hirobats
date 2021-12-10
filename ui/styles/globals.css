@@ -40,7 +40,7 @@ footer {
   overflow: "auto";
 }
 .message-area {
-  height: calc(80vh - 2rem);
+  height: calc(80vh - 1rem);
   scroll-behavior: "auto";
   overflow: "auto";
 }
