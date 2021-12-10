@@ -141,7 +141,7 @@ export default function Main() {
             </a>
             <ul id="nav-mobile" className="right">
               <li>
-                <a className="white-text purple darken-1" href="#">
+                <a className="white-text" href="#">
                   ch: {channels[current].name}
                 </a>
               </li>
@@ -174,7 +174,7 @@ export default function Main() {
             <div>
               <div className="white-text">
                 ch追加
-                <a className="btn-floating waves-effect waves-light modal-trigger" href="#modal1">
+                <a className="btn-floating waves-effect modal-trigger" href="#modal1">
                   <i className="material-icons purple darken-2">add</i>
                 </a>
               </div>
@@ -218,14 +218,14 @@ export default function Main() {
               <a className="modal-text">追加したいチャンネルを選んでね</a>
             </div>
             <div className="modal-footer">
-              <a href="#!" className="modal-close purple darken-2 z-depth-2 waves-effect waves-green btn white-text">
+              <a href="#!" className="modal-close purple darken-2 z-depth-2 waves-effect btn white-text">
                 決定
               </a>
             </div>
           </div>
           {/* メッセージエリア */}
           <div className="message-area col s12 m10 l10">
-            <div ref={ref}>
+            <div className="message-room" ref={ref}>
               {dialog.map((e: Dialog, idx: number) => {
                 if (e.id === current) {
                   return (
@@ -261,8 +261,8 @@ export default function Main() {
             </div>
           </div>
           {/* テキストエリア */}
-          <div className="text-area col s12 m9 l9">
-            <div className="input-field col s10">
+          <div className="text-area col s12 m8 l8">
+            <div className="input-field col s11">
               <i className="material-icons prefix">mode_edit</i>
               <textarea
                 id="textarea"
@@ -272,18 +272,24 @@ export default function Main() {
                 value={value}
               ></textarea>
             </div>
-            {value ? (<button
-              className="btn waves-effect waves-light col s2 right purple darken-1 white-text"
-              onClick={handleSubmit}
-            >
-              送信
-            </button>) : (<button
-              className="btn waves-effect waves-light col s2 right purple darken-1 white-text"
+          </div>
+          <div className="col s12 m2 l2">
+            {value ? (
+              <button
+                className="btn waves-effect col s12 purple darken-1 white-text"
+                onClick={handleSubmit}
+              >
+                送信する
+              </button>
+            ) : (
+              <button
+                className="btn waves-effect col s12 purple darken-1 white-text"
                 onClick={handleSubmit}
                 disabled
-            >
-              送信
-            </button>)}
+              >
+                送信する
+              </button>
+            )}
           </div>
         </div>
         {/* フッター */}

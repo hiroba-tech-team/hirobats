@@ -17,34 +17,27 @@ a {
 /* 以下追記したもの */
 nav {
   height: 7vh;
-  position: "fixed";
 }
 footer {
   height: 3vh;
-  position: "fixed";
 }
-
 .row {
   margin: 0;
   padding: 0;
 }
 .side-area {
-  position: "fixed";
   height: 90vh;
-  scroll-behavior: "auto";
-  overflow: "auto";
 }
 .message-area {
-  position: "fixed";
-  display: flex;
   height: calc(80vh - 2rem);
-  scroll-behavior: "auto";
-  overflow: "scroll";
   border-bottom: 0.1rem solid #8e24aa;
+  scroll-behavior: auto;
+  overflow: auto;
 }
 .text-area {
-  position: "fixed";
   height: 10vh;
+  scroll-behavior: auto;
+  overflow: auto;
 }
 .logo {
   margin-left: 2rem;
@@ -88,7 +81,7 @@ textarea.materialize-textarea {
 .btn {
   border-radius: 0.3rem;
   margin-top: 2em;
-  position: relative;
+  margin-bottom: 1em;
 }
 .white-text {
   font-size: 1.5rem;
