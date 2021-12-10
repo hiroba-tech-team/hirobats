@@ -136,7 +136,7 @@ export default function Main() {
             <div>
               <div className="white-text">
                 チャンネル一覧
-                <a className="btn-floating">
+                <a className="btn-floating waves-effect waves-light modal-trigger" href="#modal1">
                   <i className="material-icons purple darken-2">add</i>
                 </a>
               </div>
@@ -157,7 +157,7 @@ export default function Main() {
             </div>
             {/* ユーザー変更テストのため */}
             <div>
-              <div className="white-text">ユーザー変更テスト</div>
+              <div className="user-change white-text">ユーザー変更テスト</div>
               {testUser.map((testUser: User) => {
                 return (
                   <div className="channel-list" key={testUser.id}>
@@ -172,6 +172,20 @@ export default function Main() {
                   </div>
                 );
               })}
+            </div>
+          </div>
+          {/* モーダル */}
+          <div id="modal1" className="modal">
+            <div className="modal-content">
+              <a className="black-text">追加したいチャンネルを選んでね</a>
+            </div>
+            <div className="modal-footer">
+              <a
+                href="#!"
+                className="modal-close purple darken-2 z-depth-2 waves-effect waves-green btn white-text"
+              >
+                決定
+              </a>
             </div>
           </div>
           {/* メッセージエリア */}
@@ -253,7 +267,7 @@ export default function Main() {
         </div>
         {/* フッター */}
         <footer className="page-footer purple darken-2">
-          <div className="container center white-text">© 2021 hiroba.tech</div>
+          <div className="copy-right white-text">© 2021 hiroba.tech</div>
         </footer>
       </div>
     </>

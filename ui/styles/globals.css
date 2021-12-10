@@ -5,16 +5,15 @@ body {
   font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen, Ubuntu, Cantarell, Fira Sans, Droid Sans,
     Helvetica Neue, sans-serif;
 }
-
 a {
   color: inherit;
   text-decoration: none;
 }
-
 * {
   box-sizing: border-box;
 }
 
+/* 以下追記したもの */
 .main {
   display: "flex";
 }
@@ -38,8 +37,7 @@ footer {
   overflow: "auto";
 }
 .message-area {
-  height: calc(76vh - 2em - 8px);
-  position: sticky;
+  height: calc(76vh - 2em - 10px);
   scroll-behavior: "auto";
   overflow: "auto";
 }
@@ -70,8 +68,9 @@ footer {
 textarea.materialize-textarea {
   font-size: 1.5em;
 }
-button {
+.btn {
   margin-top: 1em;
+  border-radius: 0.3em;
 }
 .white-text {
   font-size: 1.5em;
@@ -88,4 +87,12 @@ button {
 }
 .channel-name {
   padding: 0.5em;
+}
+.user-change {
+  margin-top: 1.5em;
+}
+.copy-right {
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
