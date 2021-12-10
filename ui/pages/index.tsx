@@ -100,60 +100,54 @@ export default function Main() {
   return (
     <>
       {/* Materialize導入によりマージンの再設定を削除 */}
-      <div className="container">
+      <div className="">
+        {/* ヘッダー */}
         <nav>
-          <div className="nav-wrapper purple darken-1">
-            <a href="#" className="brand-logo">
+          <div className="nav-wrapper purple darken-2">
+            <a href="#" className="logo">
               hirobats
             </a>
-            <a href="#" data-target="mobile" className="sidenav-trigger">
-              <i className="material-icons">menu</i>
-            </a>
-
-            <ul id="nav-mobile" className="right hide-on-med-and-down">
+            <ul id="nav-mobile" className="right">
               <li>
-                <a href="#">設定</a>
+                <a className="white-text" href="#">
+                  <i className="material-icons">settings</i>
+                </a>
               </li>
               <li>
-                <a href="#">ログアウト</a>
+                <a className="white-text" href="#">
+                  <i className="material-icons">logout</i>
+                </a>
               </li>
             </ul>
           </div>
         </nav>
-        <div className="col s12 m3 l3 purple darken-1">
-          チャンネル: {channels[current].name}
-          説明: {channels[current].desc}
-        </div>
-        <ul className="sidenav" id="mobile">
-          <li>
-            <a href="#">設定</a>
-          </li>
-          <li>
-            <a href="#">ログアウト</a>
-          </li>
-        </ul>
         {/* グリッド表示のためclassをrowに設定 */}
         <div className="row">
           {/* サイドバー */}
-          <div className="col s12 m3 l3 purple darken-1">
-            <div>
-              {users.avatar ? (
-                <Image className="responsive-img" src={users.avatar} alt="" height={50} width={50} />
-              ) : null}
+          <div className="side-area col s12 m3 l3 purple darken-1">
+            <div className="user">
+              <div className="user-avatar">
+                {users.avatar ? (
+                  <Image className="responsive-img" src={users.avatar} alt="" height={70} width={70} />
+                ) : null}
+              </div>
+              <div className="user-name white-text">{users.name}</div>
             </div>
-            <div className="center-align">{users.name}</div>
             <div>
               <div className="white-text">
-                チャンネル一覧{" "}
+                チャンネル一覧
                 <a className="btn-floating">
                   <i className="material-icons purple darken-2">add</i>
                 </a>
               </div>
               {channels.map((channel: Channel) => {
                 return (
-                  <div key={channel.id}>
-                    <ul className="collection">
-                      <li className="collection-item" onClick={() => handleOnClick(channel.id)}>
+                  <div className="channel-list" key={channel.id}>
+                    <ul>
+                      <li
+                        className="channel-name purple darken-2 z-depth-2 white-text"
+                        onClick={() => handleOnClick(channel.id)}
+                      >
                         {channel.name}
                       </li>
                     </ul>
@@ -162,14 +156,16 @@ export default function Main() {
               })}
             </div>
             {/* ユーザー変更テストのため */}
-            <br />
             <div>
               <div className="white-text">ユーザー変更テスト</div>
               {testUser.map((testUser: User) => {
                 return (
-                  <div key={testUser.id}>
-                    <ul className="collection">
-                      <li className="collection-item" onClick={() => changeUser(testUser.id)}>
+                  <div className="channel-list" key={testUser.id}>
+                    <ul>
+                      <li
+                        className="channel-name purple darken-2 z-depth-2 white-text"
+                        onClick={() => changeUser(testUser.id)}
+                      >
                         {testUser.name}
                       </li>
                     </ul>
@@ -178,9 +174,8 @@ export default function Main() {
               })}
             </div>
           </div>
-
           {/* メッセージエリア */}
-          <div className="col s12 m9 l9">
+          <div className="message-area col s12 m9 l9">
             <div ref={ref}>
               {dialog.map((e: Dialog, idx: number) => {
                 if (e.id === current) {
@@ -188,7 +183,7 @@ export default function Main() {
                     <div key={idx}>
                       {users.name === e.user ? (
                         <div>
-                          <div>{e.user}</div>
+                          <div className="black-text">{e.user}</div>
                           <div>
                             <div>
                               <Image
@@ -199,17 +194,17 @@ export default function Main() {
                                 width={60}
                               />
                             </div>
-                            <div>
-                              <div>{e.message}</div>
-                              <div>
-                                <span>{e.time}</span>
+                            <div className="right">
+                              <div className="black-text">{e.message}</div>
+                              <div className="right">
+                                <span className="black-text">{e.time}</span>
                               </div>
                             </div>
                           </div>
                         </div>
                       ) : (
                         <div>
-                          <div>{e.user}</div>
+                          <div className="black-text">{e.user}</div>
                           <div>
                             <div>
                               <Image
@@ -221,9 +216,9 @@ export default function Main() {
                               />
                             </div>
                             <div>
-                              <div>{e.message}</div>
+                              <div className="black-text">{e.message}</div>
                               <div>
-                                <span>{e.time}</span>
+                                <span className="black-text">{e.time}</span>
                               </div>
                             </div>
                           </div>
@@ -233,36 +228,32 @@ export default function Main() {
                   );
                 }
               })}
-              {dialog.length === 0 && <div>メッセージがありません</div>}
+              {dialog.length === 0 && <div className="white-text">メッセージがありません</div>}
             </div>
-
-            {/* テキストボックス */}
-            <div className="row">
-              <div className="input-field col s10">
-                <i className="material-icons prefix">mode_edit</i>
-                <textarea
-                  id="textarea1"
-                  className="materialize-textarea"
-                  placeholder="メッセージを入力してください"
-                  onChange={(e) => setValue(e.target.value)}
-                  value={value}
-                ></textarea>
-              </div>
-              <button className="btn waves-effect waves-light col s2 right purple darken-1" onClick={handleSubmit}>
-                送信する
-              </button>
+          </div>
+          {/* テキストエリア */}
+          <div className="text-area col s12 m9 l9">
+            <div className="input-field col s10">
+              <i className="material-icons prefix">mode_edit</i>
+              <textarea
+                id="textarea"
+                className="materialize-textarea"
+                placeholder="メッセージを入力してください"
+                onChange={(e) => setValue(e.target.value)}
+                value={value}
+              ></textarea>
             </div>
+            <button
+              className="btn waves-effect waves-light col s2 right purple darken-1 white-text"
+              onClick={handleSubmit}
+            >
+              送信
+            </button>
           </div>
         </div>
-        <footer className="page-footer purple darken-1">
-          <div className="row">
-            <div className="center">
-              <div className="white-text">hirobats</div>
-            </div>
-          </div>
-          <div className="footer-copyright purple darken-2">
-            <div className="container center">© 2021 hiroba.tech</div>
-          </div>
+        {/* フッター */}
+        <footer className="page-footer purple darken-2">
+          <div className="container center white-text">© 2021 hiroba.tech</div>
         </footer>
       </div>
     </>
