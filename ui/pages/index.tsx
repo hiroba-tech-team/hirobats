@@ -99,249 +99,121 @@ export default function Main() {
 
   return (
     <>
-      {/* マージンがデフォルトで8pxになるためグローバルに0を設定 */}
-      <style jsx global>{`
-        body {
-          margin: 0px;
-          padding: 0px;
-        }
-      `}</style>
+      {/* Materialize導入によりマージンの再設定を削除 */}
+      <div className="container">
+        <nav>
+          <div className="nav-wrapper purple darken-1">
+            <a href="#" className="brand-logo">
+              hirobats
+            </a>
+            <a href="#" data-target="mobile" className="sidenav-trigger">
+              <i className="material-icons">menu</i>
+            </a>
 
-      <div style={{ display: "flex" }}>
-        {/* サイドバー */}
-        <div
-          style={{
-            background: "purple",
-            height: "100vh",
-            width: "18em",
-          }}
-        >
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              color: "white",
-              fontWeight: "bold",
-              padding: "10px 15px",
-              marginRight: "15px",
-            }}
-          >
-            {users.avatar ? <Image src={users.avatar} alt="" height={50} width={50} /> : null}
-            <div
-              style={{
-                marginTop: "25px",
-                marginLeft: "20px",
-                marginBottom: "20px",
-                fontSize: "20px",
-              }}
-            >
-              {users.name}
-            </div>
+            <ul id="nav-mobile" className="right hide-on-med-and-down">
+              <li>
+                <a href="#">設定</a>
+              </li>
+              <li>
+                <a href="#">ログアウト</a>
+              </li>
+            </ul>
           </div>
-          <hr />
-          <div>
-            <div
-              style={{
-                fontWeight: "bold",
-                color: "white",
-                fontSize: "18px",
-                padding: "10px 15px",
-                cursor: "pointer",
-              }}
-            >
-              チャンネル一覧
-            </div>
-            {channels.map((channel: Channel) => {
-              return (
-                <div key={channel.id}>
-                  <ul
-                    style={{
-                      margin: "0",
-                      padding: "0",
-                      color: "white",
-                    }}
-                  >
-                    <li
-                      style={{
-                        paddingLeft: "20px",
-                        paddingTop: "15px",
-                        color: "white",
-                        fontSize: "20px",
-                        cursor: "pointer",
-                      }}
-                      onClick={() => handleOnClick(channel.id)}
-                    >
-                      {channel.name}
-                    </li>
-                  </ul>
-                </div>
-              );
-            })}
-          </div>
-          {/* ユーザー変更テストのため */}
-          <br />
-          <div>
-            <div
-              style={{
-                fontWeight: "bold",
-                color: "white",
-                fontSize: "18px",
-                padding: "10px 15px",
-              }}
-            >
-              ユーザー変更テスト
-            </div>
-            {testUser.map((testUser: User) => {
-              return (
-                <div key={testUser.id}>
-                  <ul
-                    style={{
-                      margin: "0",
-                      padding: "0",
-                      color: "white",
-                    }}
-                  >
-                    <li
-                      style={{
-                        paddingLeft: "20px",
-                        paddingTop: "15px",
-                        color: "white",
-                        fontSize: "20px",
-                        cursor: "pointer",
-                      }}
-                      onClick={() => changeUser(testUser.id)}
-                    >
-                      {testUser.name}
-                    </li>
-                  </ul>
-                </div>
-              );
-            })}
-          </div>
+        </nav>
+        <div className="col s12 m3 l3 purple darken-1">
+          チャンネル: {channels[current].name}
+          説明: {channels[current].desc}
         </div>
-
-        {/* タイトル */}
-        <div style={{ width: "100vw", position: "relative" }}>
-          <div
-            style={{
-              padding: "10px 20px",
-              borderBottom: "1px solid black",
-              marginBottom: "10px",
-            }}
-          >
-            <div
-              style={{
-                fontSize: "25px",
-                fontWeight: "bold",
-                marginBottom: "10px",
-              }}
-            >
-              {channels[current].name}
+        <ul className="sidenav" id="mobile">
+          <li>
+            <a href="#">設定</a>
+          </li>
+          <li>
+            <a href="#">ログアウト</a>
+          </li>
+        </ul>
+        {/* グリッド表示のためclassをrowに設定 */}
+        <div className="row">
+          {/* サイドバー */}
+          <div className="col s12 m3 l3 purple darken-1">
+            <div>
+              {users.avatar ? (
+                <Image className="responsive-img" src={users.avatar} alt="" height={50} width={50} />
+              ) : null}
             </div>
-            <div
-              style={{
-                fontSize: "20px",
-                marginBottom: "10px",
-              }}
-            >
-              {channels[current].desc}
+            <div className="center-align">{users.name}</div>
+            <div>
+              <div className="white-text">
+                チャンネル一覧{" "}
+                <a className="btn-floating">
+                  <i className="material-icons purple darken-2">add</i>
+                </a>
+              </div>
+              {channels.map((channel: Channel) => {
+                return (
+                  <div key={channel.id}>
+                    <ul className="collection">
+                      <li className="collection-item" onClick={() => handleOnClick(channel.id)}>
+                        {channel.name}
+                      </li>
+                    </ul>
+                  </div>
+                );
+              })}
+            </div>
+            {/* ユーザー変更テストのため */}
+            <br />
+            <div>
+              <div className="white-text">ユーザー変更テスト</div>
+              {testUser.map((testUser: User) => {
+                return (
+                  <div key={testUser.id}>
+                    <ul className="collection">
+                      <li className="collection-item" onClick={() => changeUser(testUser.id)}>
+                        {testUser.name}
+                      </li>
+                    </ul>
+                  </div>
+                );
+              })}
             </div>
           </div>
 
           {/* メッセージエリア */}
-          <div
-            style={{
-              bottom: "0",
-              height: "70vh",
-              display: "fixed",
-              scrollBehavior: "auto",
-              overflow: "auto",
-            }}
-          >
-            <div ref={ref} style={{ paddingBottom: "90px" }}>
+          <div className="col s12 m9 l9">
+            <div ref={ref}>
               {dialog.map((e: Dialog, idx: number) => {
                 if (e.id === current) {
                   return (
                     <div key={idx}>
                       {users.name === e.user ? (
-                        <div style={{ textAlign: "left" }}>
-                          <div
-                            style={{
-                              marginBottom: "2px",
-                              paddingLeft: "20px",
-                              marginRight: "10px",
-                              fontWeight: "bold",
-                            }}
-                          >
-                            {e.user}
-                          </div>
-                          <div
-                            style={{
-                              display: "flex",
-                              marginBottom: "20px",
-                              paddingLeft: "20px",
-                              marginRight: "10px",
-                            }}
-                          >
+                        <div>
+                          <div>{e.user}</div>
+                          <div>
                             <div>
                               <Image
+                                className="responsive-img"
                                 src="https://ca.slack-edge.com/T0266FRGM-U2Q173U05-g863c2a865d7-512"
                                 alt=""
                                 height={60}
                                 width={60}
-                                layout="fixed"
                               />
                             </div>
                             <div>
-                              <div
-                                style={{
-                                  marginLeft: "20px",
-                                  fontSize: "20px",
-                                  display: "inline-block",
-                                  margin: "10px 20px",
-                                  padding: "10px 20px",
-                                  background: "skyblue",
-                                  textAlign: "left",
-                                  borderRadius: "12px",
-                                }}
-                              >
-                                {e.message}
-                              </div>
-                              <div
-                                style={{
-                                  marginLeft: "10px",
-                                  display: "flex",
-                                  alignItems: "center",
-                                  marginBottom: "5px",
-                                }}
-                              >
+                              <div>{e.message}</div>
+                              <div>
                                 <span>{e.time}</span>
                               </div>
                             </div>
                           </div>
                         </div>
                       ) : (
-                        <div style={{ textAlign: "left" }}>
-                          <div
-                            style={{
-                              marginBottom: "2px",
-                              paddingLeft: "20px",
-                              marginRight: "10px",
-                              fontWeight: "bold",
-                            }}
-                          >
-                            {e.user}
-                          </div>
-                          <div
-                            style={{
-                              display: "flex",
-                              marginBottom: "20px",
-                              paddingLeft: "20px",
-                              marginRight: "10px",
-                            }}
-                          >
+                        <div>
+                          <div>{e.user}</div>
+                          <div>
                             <div>
                               <Image
+                                className="responsive-img"
                                 src="https://ca.slack-edge.com/T0188513NTW-U01867WD8GK-ga631e27835b-72"
                                 alt=""
                                 height={60}
@@ -349,28 +221,8 @@ export default function Main() {
                               />
                             </div>
                             <div>
-                              <div
-                                style={{
-                                  marginLeft: "20px",
-                                  fontSize: "20px",
-                                  display: "inline-block",
-                                  margin: "10px 20px",
-                                  padding: "10px 20px",
-                                  background: "orange",
-                                  textAlign: "left",
-                                  borderRadius: "12px",
-                                }}
-                              >
-                                {e.message}
-                              </div>
-                              <div
-                                style={{
-                                  marginLeft: "10px",
-                                  display: "flex",
-                                  alignItems: "center",
-                                  marginBottom: "5px",
-                                }}
-                              >
+                              <div>{e.message}</div>
+                              <div>
                                 <span>{e.time}</span>
                               </div>
                             </div>
@@ -381,51 +233,37 @@ export default function Main() {
                   );
                 }
               })}
-              {dialog.length === 0 && <div style={{ textAlign: "center", marginTop: 20 }}>メッセージがありません</div>}
+              {dialog.length === 0 && <div>メッセージがありません</div>}
+            </div>
+
+            {/* テキストボックス */}
+            <div className="row">
+              <div className="input-field col s10">
+                <i className="material-icons prefix">mode_edit</i>
+                <textarea
+                  id="textarea1"
+                  className="materialize-textarea"
+                  placeholder="メッセージを入力してください"
+                  onChange={(e) => setValue(e.target.value)}
+                  value={value}
+                ></textarea>
+              </div>
+              <button className="btn waves-effect waves-light col s2 right purple darken-1" onClick={handleSubmit}>
+                送信する
+              </button>
             </div>
           </div>
-
-          {/* テキストボックス */}
-          <div
-            style={{
-              position: "fixed",
-              bottom: "0",
-              display: "column",
-            }}
-          >
-            <textarea
-              placeholder="メッセージを入力してください"
-              onChange={(e) => setValue(e.target.value)}
-              value={value}
-              style={{
-                fontSize: "20px",
-                width: "65vw",
-                marginLeft: "10px",
-                height: "100px",
-                padding: "5px",
-                marginBottom: "-50px",
-              }}
-            ></textarea>
-            <button
-              style={{
-                fontSize: "15pt",
-                width: "10vw",
-                height: "100px",
-                marginLeft: "20px",
-                borderRadius: "40px",
-                cursor: "pointer",
-                padding: "12px 12px",
-                color: "purple",
-                background: "white",
-                border: "1px solid black",
-                marginBottom: "30px",
-              }}
-              onClick={handleSubmit}
-            >
-              送信する
-            </button>
-          </div>
         </div>
+        <footer className="page-footer purple darken-1">
+          <div className="row">
+            <div className="center">
+              <div className="white-text">hirobats</div>
+            </div>
+          </div>
+          <div className="footer-copyright purple darken-2">
+            <div className="container center">© 2021 hiroba.tech</div>
+          </div>
+        </footer>
       </div>
     </>
   );
