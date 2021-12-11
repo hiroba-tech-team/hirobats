@@ -13,6 +13,7 @@ interface Dialog {
   message: string;
   time: string;
   user: string;
+  avatar: string;
 }
 // 変数user の型（未定）
 interface User {
@@ -43,12 +44,43 @@ export default function Main() {
       message: "こんにちは",
       time: "15:10",
       user: "ひろばくん",
+      avatar: "https://www.pinclipart.com/picdir/big/155-1559316_male-avatar-clipart.png",
     },
-    { id: 0, message: "はじめまして", time: "16:10", user: "ひろばさん" },
-    { id: 1, message: "ありがとう", time: "17:10", user: "ひろばくん" },
-    { id: 1, message: "どういたしまして", time: "18:10", user: "ひろばくん" },
-    { id: 2, message: "こんにちは", time: "19:10", user: "ひろばくん" },
-    { id: 2, message: "さようなら", time: "20:10", user: "ひろばくん" },
+    {
+      id: 0,
+      message: "はじめまして",
+      time: "16:10",
+      user: "ひろばさん",
+      avatar: "https://www.pinclipart.com/picdir/big/155-1559325_female-avatar-clipart.png ",
+    },
+    {
+      id: 1,
+      message: "ありがとう",
+      time: "17:10",
+      user: "ひろばくん",
+      avatar: "https://www.pinclipart.com/picdir/big/155-1559316_male-avatar-clipart.png",
+    },
+    {
+      id: 1,
+      message: "どういたしまして",
+      time: "18:10",
+      user: "ひろばくん",
+      avatar: "https://www.pinclipart.com/picdir/big/155-1559316_male-avatar-clipart.png",
+    },
+    {
+      id: 2,
+      message: "こんにちは",
+      time: "19:10",
+      user: "ひろばくん",
+      avatar: "https://www.pinclipart.com/picdir/big/155-1559316_male-avatar-clipart.png",
+    },
+    {
+      id: 2,
+      message: "さようなら",
+      time: "20:10",
+      user: "ひろばさん",
+      avatar: "https://www.pinclipart.com/picdir/big/155-1559325_female-avatar-clipart.png",
+    },
   ]);
   const [current, setCurrent] = useState<number>(0); // 現在の選択されているチャンネル
   const [value, setValue] = useState<string>(""); // テキストボックスに入力されている値
@@ -58,13 +90,13 @@ export default function Main() {
     setCurrent(e);
   };
   const handleSubmit = () => {
-    dialog.push({ id: current, message: value, time: "21:20", user: users.name });
+    dialog.push({ id: current, message: value, time: "21:20", user: users.name, avatar: users.avatar });
     setDialog(dialog);
     setValue("");
   };
   const changeUser = (e: number) => {
     setUsers(testUser[e]);
-  }
+  };
   // テスト用にユーザーデータを定義
   let testUser = [
     {
@@ -94,290 +126,130 @@ export default function Main() {
   // 読み込み時にユーザーを 変数users にセット
   useEffect(() => {
     setUsers(testUser[0]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
     <>
-      {/* マージンがデフォルトで8pxになるためグローバルに0を設定 */}
-      <style jsx global>{`
-        body {
-          margin: 0px;
-          padding: 0px;
-        }
-      `}</style>
-
-      <div style={{ display: "flex" }}>
-        {/* サイドバー */}
-        <div
-          style={{
-            background: "purple",
-            height: "100vh",
-            width: "18em",
-          }}
-        >
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              color: "white",
-              fontWeight: "bold",
-              padding: "10px 15px",
-              marginRight: "15px",
-            }}
-          >
-            {users.avatar ? (<Image
-              src={users.avatar}
-              alt=""
-              height={50}
-              width={50}
-            />) : null}
-            <div
-              style={{
-                marginTop: "25px",
-                marginLeft: "20px",
-                marginBottom: "20px",
-                fontSize: "20px",
-              }}
-            >
-              {users.name}
+      {/* Materialize導入によりマージンの再設定を削除 */}
+      <div className="">
+        {/* ヘッダー */}
+        <nav>
+          <div className="nav-wrapper purple darken-2">
+            <a href="#" className="logo">
+              hirobats
+            </a>
+            <ul id="nav-mobile" className="right">
+              <li>
+                <a className="white-text" href="#">
+                  ch: {channels[current].name}
+                </a>
+              </li>
+              <li>
+                <a className="white-text" href="#">
+                  <i className="material-icons">settings</i>
+                </a>
+              </li>
+              <li>
+                <a className="white-text" href="#">
+                  <i className="material-icons">logout</i>
+                </a>
+              </li>
+            </ul>
+          </div>
+        </nav>
+        {/* グリッド表示のためclassをrowに設定 */}
+        <div className="row">
+          {/* サイドバー */}
+          <div className="side-area col s12 m2 l2 purple darken-1 hide-on-med-and-down">
+            <div className="user-container">
+              <div className="user-avatar">
+                {users.avatar ? (
+                  <Image className="responsive-img" src={users.avatar} alt="" height={70} width={70} />
+                ) : null}
+              </div>
+              {/* ディスプレイ幅によって"hide-on-med-and-down" */}
+              <div className="user-name white-text">{users.name}</div>
+            </div>
+            <div>
+              <div className="white-text">
+                ch追加
+                <a className="btn-floating waves-effect modal-trigger" href="#modal1">
+                  <i className="material-icons purple darken-2">add</i>
+                </a>
+              </div>
+              {channels.map((channel: Channel) => {
+                return (
+                  <div className="channel-list hide-on-med-and-down" key={channel.id}>
+                    <ul>
+                      <li
+                        className="channel-name purple darken-2 z-depth-2 white-text"
+                        onClick={() => handleOnClick(channel.id)}
+                      >
+                        {channel.name}
+                      </li>
+                    </ul>
+                  </div>
+                );
+              })}
+            </div>
+            {/* ユーザー変更テストのため　ディスプレイ幅によって"hide-on-med-and-down" */}
+            <div className="hide-on-med-and-down">
+              <div className="user-change white-text">ユーザー変更</div>
+              {testUser.map((testUser: User) => {
+                return (
+                  <div className="channel-list" key={testUser.id}>
+                    <ul>
+                      <li
+                        className="channel-name purple darken-2 z-depth-2 white-text"
+                        onClick={() => changeUser(testUser.id)}
+                      >
+                        {testUser.name}
+                      </li>
+                    </ul>
+                  </div>
+                );
+              })}
             </div>
           </div>
-          <hr />
-          <div>
-            <div
-              style={{
-                fontWeight: "bold",
-                color: "white",
-                fontSize: "18px",
-                padding: "10px 15px",
-                cursor: "pointer",
-              }}
-            >
-              チャンネル一覧
+          {/* モーダル */}
+          <div id="modal1" className="modal">
+            <div className="modal-content">
+              <a className="modal-text">追加したいチャンネルを選んでね</a>
             </div>
-            {channels.map((channel: Channel) => {
-              return (
-                <div key={channel.id}>
-                  <ul
-                    style={{
-                      margin: "0",
-                      padding: "0",
-                      color: "white",
-                    }}
-                  >
-                    <li
-                      style={{
-                        paddingLeft: "20px",
-                        paddingTop: "15px",
-                        color: "white",
-                        fontSize: "20px",
-                        cursor: "pointer",
-                      }}
-                      onClick={() => handleOnClick(channel.id)}
-                    >
-                      {channel.name}
-                    </li>
-                  </ul>
-                </div>
-              );
-            })}
-          </div>
-          {/* ユーザー変更テストのため */}
-          <br/>
-          <div>
-            <div
-              style={{
-                fontWeight: "bold",
-                color: "white",
-                fontSize: "18px",
-                padding: "10px 15px",
-              }}
-            >
-              ユーザー変更テスト
-            </div>
-            {testUser.map((testUser: User) => {
-              return (
-                <div key={testUser.id}>
-                  <ul
-                    style={{
-                      margin: "0",
-                      padding: "0",
-                      color: "white",
-                    }}
-                  >
-                    <li
-                      style={{
-                        paddingLeft: "20px",
-                        paddingTop: "15px",
-                        color: "white",
-                        fontSize: "20px",
-                        cursor: "pointer",
-                      }}
-                      onClick={() => changeUser(testUser.id)}
-                    >
-                      {testUser.name}
-                    </li>
-                  </ul>
-                </div>
-              );
-            })}
-          </div>
-        </div>
-
-        {/* タイトル */}
-        <div style={{ width: "100vw", position: "relative" }}>
-          <div
-            style={{
-              padding: "10px 20px",
-              borderBottom: "1px solid black",
-              marginBottom: "10px",
-            }}
-          >
-            <div
-              style={{
-                fontSize: "25px",
-                fontWeight: "bold",
-                marginBottom: "10px",
-              }}
-            >
-              {channels[current].name}
-            </div>
-            <div
-              style={{
-                fontSize: "20px",
-                marginBottom: "10px",
-              }}
-            >
-              {channels[current].desc}
+            <div className="modal-footer">
+              <a href="#!" className="modal-close purple darken-2 z-depth-2 waves-effect btn white-text">
+                決定
+              </a>
             </div>
           </div>
-
           {/* メッセージエリア */}
-          <div
-            style={{
-              bottom: "0",
-              height: "70vh",
-              display: "fixed",
-              scrollBehavior: "auto",
-              overflow: "auto",
-            }}
-          >
-            <div ref={ref} style={{ paddingBottom: "90px" }}>
+          <div className="message-area col s12 m10 l10">
+            <div className="message-room" ref={ref}>
               {dialog.map((e: Dialog, idx: number) => {
                 if (e.id === current) {
                   return (
                     <div key={idx}>
                       {users.name === e.user ? (
-                        <div style={{ textAlign: "left" }}>
-                          <div
-                            style={{
-                              marginBottom: "2px",
-                              paddingLeft: "20px",
-                              marginRight: "10px",
-                              fontWeight: "bold",
-                            }}
-                          >
-                            {e.user}
+                        <div className="message-container">
+                          <div>
+                            <Image className="e-image responsive-img" src={e.avatar} alt="" height={60} width={60} />
+                            <div className="black-text">{e.user}</div>
                           </div>
-                          <div
-                            style={{
-                              display: "flex",
-                              marginBottom: "20px",
-                              paddingLeft: "20px",
-                              marginRight: "10px",
-                            }}
-                          >
-                            <div>
-                              <Image
-                                src="https://ca.slack-edge.com/T0266FRGM-U2Q173U05-g863c2a865d7-512"
-                                alt=""
-                                height={60}
-                                width={60}
-                                layout="fixed"
-                              />
-                            </div>
-                            <div>
-                              <div
-                                style={{
-                                  marginLeft: "20px",
-                                  fontSize: "20px",
-                                  display: "inline-block",
-                                  margin: "10px 20px",
-                                  padding: "10px 20px",
-                                  background: "skyblue",
-                                  textAlign: "left",
-                                  borderRadius: "12px",
-                                }}
-                              >
-                                {e.message}
-                              </div>
-                              <div
-                                style={{
-                                  marginLeft: "10px",
-                                  display: "flex",
-                                  alignItems: "center",
-                                  marginBottom: "5px",
-                                }}
-                              >
-                                <span>{e.time}</span>
-                              </div>
-                            </div>
+                          <div>
+                            <div className="e-message black-text balloon">{e.message}</div>
+                            <div className="e-time black-text">{e.time}</div>
                           </div>
                         </div>
                       ) : (
-                        <div style={{ textAlign: "left" }}>
-                          <div
-                            style={{
-                              marginBottom: "2px",
-                              paddingLeft: "20px",
-                              marginRight: "10px",
-                              fontWeight: "bold",
-                            }}
-                          >
-                            {e.user}
+                        <div className="message-container">
+                          <div>
+                            <Image className="e-image responsive-img" src={e.avatar} alt="" height={60} width={60} />
+                            <div className="black-text">{e.user}</div>
                           </div>
-                          <div
-                            style={{
-                              display: "flex",
-                              marginBottom: "20px",
-                              paddingLeft: "20px",
-                              marginRight: "10px",
-                            }}
-                          >
-                            <div>
-                              <Image
-                                src="https://ca.slack-edge.com/T0188513NTW-U01867WD8GK-ga631e27835b-72"
-                                alt=""
-                                height={60}
-                                width={60}
-                              />
-                            </div>
-                            <div>
-                              <div
-                                style={{
-                                  marginLeft: "20px",
-                                  fontSize: "20px",
-                                  display: "inline-block",
-                                  margin: "10px 20px",
-                                  padding: "10px 20px",
-                                  background: "orange",
-                                  textAlign: "left",
-                                  borderRadius: "12px",
-                                }}
-                              >
-                                {e.message}
-                              </div>
-                              <div
-                                style={{
-                                  marginLeft: "10px",
-                                  display: "flex",
-                                  alignItems: "center",
-                                  marginBottom: "5px",
-                                }}
-                              >
-                                <span>{e.time}</span>
-                              </div>
-                            </div>
+                          <div>
+                            <div className="e-message black-text balloon">{e.message}</div>
+                            <div className="e-time black-text">{e.time}</div>
                           </div>
                         </div>
                       )}
@@ -385,51 +257,45 @@ export default function Main() {
                   );
                 }
               })}
-              {dialog.length === 0 && <div style={{ textAlign: "center", marginTop: 20 }}>メッセージがありません</div>}
+              {dialog.length === 0 && <div className="white-text">メッセージがありません</div>}
             </div>
           </div>
-
-          {/* テキストボックス */}
-          <div
-            style={{
-              position: "fixed",
-              bottom: "0",
-              display: "column",
-            }}
-          >
-            <textarea
-              placeholder="メッセージを入力してください"
-              onChange={(e) => setValue(e.target.value)}
-              value={value}
-              style={{
-                fontSize: "20px",
-                width: "65vw",
-                marginLeft: "10px",
-                height: "100px",
-                padding: "5px",
-                marginBottom: "-50px",
-              }}
-            ></textarea>
-            <button
-              style={{
-                fontSize: "15pt",
-                width: "10vw",
-                height: "100px",
-                marginLeft: "20px",
-                borderRadius: "40px",
-                cursor: "pointer",
-                padding: "12px 12px",
-                color: "purple",
-                background: "white",
-                border: "1px solid black",
-                marginBottom: "30px",
-              }}
-              onClick={handleSubmit}
-            >
-              送信する
-            </button>
+          {/* テキストエリア */}
+          <div className="text-area col s12 m8 l8">
+            <div className="input-field col s11">
+              <i className="material-icons prefix">mode_edit</i>
+              <textarea
+                id="textarea"
+                className="materialize-textarea"
+                placeholder="メッセージを入力してください"
+                onChange={(e) => setValue(e.target.value)}
+                value={value}
+              ></textarea>
+            </div>
+          </div>
+          <div className="col s12 m2 l2">
+            {value ? (
+              <button
+                className="btn waves-effect col s12 purple darken-1 white-text"
+                onClick={handleSubmit}
+              >
+                送信する
+              </button>
+            ) : (
+              <button
+                className="btn waves-effect col s12 purple darken-1 white-text"
+                onClick={handleSubmit}
+                disabled
+              >
+                送信する
+              </button>
+            )}
           </div>
         </div>
+        {/* フッター */}
+        <footer className="purple darken-2">
+          <div className="copy-right">© 2021 hiroba.tech</div>
+        </footer>
       </div>
     </>
   );
