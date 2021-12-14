@@ -1,7 +1,7 @@
 import React, { useState, useEffect, createRef } from "react";
 import Image from "next/image";
-// import {getChannels} from "../src/lib/get_channnel"
-import {getChannels} from "../src/lib/channels"
+import {getChannels} from "../src/lib/get_channnel"
+//import {getChannels} from "../src/lib/channels"
 //import {getUsers} from "../src/lib/users"
 
 
@@ -33,6 +33,7 @@ export default function Main() {
     { id: 1, name: "打合せ", desc: "いつ始めましょうか" },
     { id: 2, name: "定例", desc: "いつもの時間で" },
   ]);
+	//const [channels, setChannels] = useState<Channel[]>([]);
   const [users, setUsers] = useState<string>("ひろばくん");
   const [dialog, setDialog] = useState<Dialog[]>([
     {
@@ -62,7 +63,8 @@ export default function Main() {
   };
 
   const c = getChannels();
-  //const d = getUsers();
+
+	
 
   useEffect(() => {
     ref!.current!.scrollIntoView({

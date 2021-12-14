@@ -1,5 +1,5 @@
 import { db } from "./firebase";
-import { collection, getDocs } from "firebase/firestore/lite";
+import { collection, getDocs } from "firebase/firestore";
 
 //Get a list of cities from your database
 export async function getUsers() {

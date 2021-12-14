@@ -1,15 +1,51 @@
-import { doc, getDoc } from "firebase/firestore/lite";
+import { doc, getDoc,FirestoreDataConverter,DocumentData,QueryDocumentSnapshot,SnapshotOptions } from "firebase/firestore";
+
 import { db } from "./firebase";
 
 
+interface ChannelInterFace {
+	id: number;
+	name: string;
+	desc: string;
+}
 
-export async function getChannels() {
-	const docRef = doc(db, "channels");
-	const docSnap = await getDoc(docRef);
+class Channel implements ChannelInterFace {
+	id: number;
+	name: string;
+	desc: string;
+
+	constructor (id: number, name: string, desc: string ) {
+			this.id = id;
+			this.name = name;
+			this.desc = desc;
+	}
+	toString() {
+			return this.id + ', ' + this.name + ', ' + this.desc;
+	}
+}
+
+const channelConverter = {
+  toFirestore(channel: Channel): DocumentData {
+    return {id: channel.id, name: channel.name, desc: channel.desc};
+  },
+  fromFirestore(
+    snapshot: QueryDocumentSnapshot,
+    options: SnapshotOptions
+  ): Channel {
+    const data = snapshot.data(options)!;
+    return new Channel(data.id, data.name, data.desc);
+  }
+}
+
+export async function getChannels(){
+	const ref = doc(db, "channels","sample").withConverter(channelConverter);
+	const docSnap = await getDoc(ref);
 	if (docSnap.exists()) {
-		console.log("Document data:", docSnap.data());
+		// Convert to City object
+		const city = docSnap.data();
+		// Use a City instance method
+		console.log(city.toString());
 	} else {
-	// doc.data() will be undefined in this case
 		console.log("No such document!");
 	}
 }
