@@ -1,8 +1,7 @@
 import React, { useState, useEffect, createRef } from "react";
 import Image from "next/image";
-import {getChannels} from "../src/lib/get_channnel"
-//import {getChannels} from "../src/lib/channels"
-//import {getUsers} from "../src/lib/users"
+import {channelList} from "../src/lib/channelList"
+
 
 
 // 変数channel の型
@@ -29,7 +28,7 @@ interface User {
 
 export default function Main() {
   const [channels, setChannels] = useState<Channel[]>([
-    { id: 0, name: "#サンプル", desc: "チャンネルの説明です" },
+    { id: 0, name: "#サンプル", desc: "チャンネルの説明ですaaaaaaaaa" },
     { id: 1, name: "打合せ", desc: "いつ始めましょうか" },
     { id: 2, name: "定例", desc: "いつもの時間で" },
   ]);
@@ -62,9 +61,12 @@ export default function Main() {
     setValue("");
   };
 
-  const c = getChannels();
-
-	
+  let c = channelList().then(channel => {
+    console.log(channel);
+    return channel;
+  }).catch(e => {
+    console.log("weeeeeeeeeeee")
+  });
 
   useEffect(() => {
     ref!.current!.scrollIntoView({

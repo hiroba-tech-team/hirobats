@@ -1,11 +1,32 @@
-import { db } from "./firebase";
-import { collection, getDocs } from "firebase/firestore";
+// import { db } from "./firebase";
+// import {collection,query, orderBy,onSnapshot } from "firebase/firestore";
 
-//Get a list of cities from your database
-export async function getChannels() {
-    const channelsCol = collection(db, 'channels');
-    const channelSnapshot = await getDocs(channelsCol);
-    const channelList = channelSnapshot.docs.map(doc => doc.data());
-    console.log(channelList);
-    return channelList;
-}
+// // 変数channel の型
+// interface Channel {
+//     id: number;
+//     name: string;
+//     desc: string;
+//   }
+
+// //Get a list of cities from your database
+// function getChannel(){
+//     let channelArr: Channel[] = []
+
+//     const q = query(collection(db, "channels"),orderBy('id','asc'));
+//     onSnapshot(q, (snapshot) => {
+    
+//       snapshot.docChanges().forEach((channel) => {
+//         if (channel.type === 'added') {
+//           console.log('added: ', channel.doc.data())
+//           channelArr.push({
+//             id: channel.doc.get('id'),
+//             name: channel.doc.data().name,
+//             desc: channel.doc.data().desc,
+//           })
+//           console.log(channelArr);
+//         }
+// 	    });
+      
+//     });
+//     setChannels(channelArr);
+//   }
