@@ -1,6 +1,6 @@
 import React, { useState, useEffect, createRef } from "react";
 import Image from "next/image";
-import {channelList} from "../src/lib/channelList"
+import {getChannelList} from "../src/lib/channelManager"
 
 
 
@@ -27,11 +27,7 @@ interface User {
 }
 
 export default function Main() {
-  const [channels, setChannels] = useState<Channel[]>([
-    { id: 0, name: "#サンプル", desc: "チャンネルの説明ですaaaaaaaaa" },
-    { id: 1, name: "打合せ", desc: "いつ始めましょうか" },
-    { id: 2, name: "定例", desc: "いつもの時間で" },
-  ]);
+  const [channels, setChannels] = useState<Channel[]>([]);
 	//const [channels, setChannels] = useState<Channel[]>([]);
   const [users, setUsers] = useState<string>("ひろばくん");
   const [dialog, setDialog] = useState<Dialog[]>([
@@ -61,11 +57,13 @@ export default function Main() {
     setValue("");
   };
 
-  let c = channelList().then(channel => {
-    console.log(channel);
-    return channel;
+  //ここでチャンネルのデータを取得する。
+  getChannelList().then(channel => {
+    //データが取得できているか確認する時に使用する
+    //console.log(channel);
+    setChannels(channel);
   }).catch(e => {
-    console.log("weeeeeeeeeeee")
+    console.log("データがありませんでした。")
   });
 
   useEffect(() => {
@@ -180,7 +178,7 @@ export default function Main() {
                 marginBottom: "10px",
               }}
             >
-              {channels[current].name}
+              {channels.length != 0 ? channels[current].name : ""}
             </div>
             <div
               style={{
@@ -188,7 +186,7 @@ export default function Main() {
                 marginBottom: "10px",
               }}
             >
-              {channels[current].desc}
+              {channels.length != 0 ? channels[current].desc : ""}
             </div>
           </div>
 
