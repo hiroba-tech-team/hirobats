@@ -1,34 +1,13 @@
 import React, { useState, useEffect, createRef } from "react";
 import Image from "next/image";
-import {getChannelList} from "../src/lib/channelManager"
+import {getChannelList} from "../src/lib/channelManager";
+import Channel from "../src/models/Channel";
+import Dialog from "../src/models/Dialog";
+import User from "../src/models/User";
 
-
-
-// 変数channel の型
-interface Channel {
-  id: number;
-  name: string;
-  desc: string;
-}
-// 変数dialog の型
-interface Dialog {
-  id: number;
-  message: string;
-  time: string;
-  user: string;
-}
-// 変数user の型（未定）
-interface User {
-  id: number;
-  name: string;
-  avatar: string;
-  channel: string[];
-  login: boolean;
-}
 
 export default function Main() {
   const [channels, setChannels] = useState<Channel[]>([]);
-	//const [channels, setChannels] = useState<Channel[]>([]);
   const [users, setUsers] = useState<string>("ひろばくん");
   const [dialog, setDialog] = useState<Dialog[]>([
     {
