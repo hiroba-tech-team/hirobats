@@ -14,23 +14,17 @@ import {
   MenuItem,
   List,
   ListItem,
-  ListItemIcon,
   ListItemText,
+  ListItemAvatar,
   Divider,
   Drawer,
   Box,
   Dialog,
   DialogTitle,
-  ListItemAvatar,
 } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
-import InboxIcon from "@mui/icons-material/MoveToInbox";
-import MailIcon from "@mui/icons-material/Mail";
-import PersonIcon from "@mui/icons-material/Person";
 import AddIcon from "@mui/icons-material/Add";
 import RemoveIcon from "@mui/icons-material/Remove";
-import ProTip from "../components/ProTip";
-import Copyright from "../components/Copyright";
 
 // 変数channel の型
 interface Channel {
@@ -56,6 +50,7 @@ interface User {
 }
 
 export default function Main() {
+  // チャンネルの初期設定
   const [channels, setChannels] = useState<Channel[]>([
     { id: 0, name: "#サンプル", desc: "チャンネルの説明です" },
     { id: 1, name: "打合せ", desc: "いつ始めましょうか" },
@@ -69,6 +64,7 @@ export default function Main() {
     channel: [],
     login: false,
   });
+  // 会話の初期設定
   const [dialog, setDialog] = useState<Dialogue[]>([
     {
       id: 0,
@@ -113,22 +109,6 @@ export default function Main() {
       avatar: "https://www.pinclipart.com/picdir/big/155-1559325_female-avatar-clipart.png",
     },
   ]);
-  const [current, setCurrent] = useState<number>(0); // 現在の選択されているチャンネル
-  const [value, setValue] = useState<string>(""); // テキストボックスに入力されている値
-  const ref = createRef<HTMLDivElement>(); // メッセージエリアを参照するためのマーカー
-  const drawerWidth = 240; // サイドメニューの幅
-
-  const handleOnClick = (e: number) => {
-    setCurrent(e);
-  };
-  const handleSubmit = () => {
-    dialog.push({ id: current, message: value, time: "21:20", user: users.name, avatar: users.avatar });
-    setDialog(dialog);
-    setValue("");
-  };
-  const changeUser = (e: number) => {
-    setUsers(testUser[e]);
-  };
   // テスト用にユーザーデータを定義
   let testUser = [
     {
@@ -147,6 +127,61 @@ export default function Main() {
     },
   ];
 
+  const [current, setCurrent] = useState<number>(0); // 現在の選択されているチャンネル
+  const [value, setValue] = useState<string>(""); // テキストボックスに入力されている値
+  const [anchorElNav, setAnchorElNav] = useState<null | HTMLElement>(null); // ユーザーメニュー表示非表示
+  const [anchorElUser, setAnchorElUser] = useState<null | HTMLElement>(null); // ハンバーガーメニュー表示非表示
+  const [open, setOpen] = useState<boolean>(false); // モーダルのオープン/クローズ
+  const ref = createRef<HTMLDivElement>(); // メッセージエリアを参照するためのマーカー
+
+  // サイドメニューの幅
+  const drawerWidth = 240;
+  // AppBarの設定
+  const pages = ["チャンネル", channels[current].name];
+  const settings = ["アカウント", "チャンネル", "ログアウト"];
+  // チャンネル変更
+  const handleOnClick = (e: number) => {
+    setCurrent(e);
+  };
+  // メッセージ書き込み
+  const handleSubmit = () => {
+    dialog.push({ id: current, message: value, time: "21:20", user: users.name, avatar: users.avatar });
+    setDialog(dialog);
+    setValue("");
+  };
+  // テスト用にユーザー変更
+  const changeUser = (e: number) => {
+    setUsers(testUser[e]);
+  };
+  // ハンバーガーメニューをオープン
+  const handleOpenUserMenu = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorElUser(event.currentTarget);
+  };
+  // ハンバーガーメニューをクローズ
+  const handleCloseUserMenu = () => {
+    setAnchorElUser(null);
+  };
+  // ユーザーメニューをオープン
+  const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorElNav(event.currentTarget);
+  };
+  // ユーザーメニューをクローズ
+  const handleCloseNavMenu = () => {
+    setAnchorElNav(null);
+  };
+  // モーダルをオープン
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
+  // モーダル外をクリックでクローズ
+  const handleClose = () => {
+    setOpen(false);
+  };
+  const handleListItemClick = () => {
+    console.log("クリックされました");
+  };
+
+  // 書き込み終了時に最新メッセージにフォーカス
   useEffect(() => {
     ref!.current!.scrollIntoView({
       // ! 表記はundefinedやnullにはならないということ
@@ -161,36 +196,6 @@ export default function Main() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const pages = ["チャンネル", channels[current].name];
-  const settings = ["アカウント", "チャンネル", "ログアウト"];
-
-  const [anchorElNav, setAnchorElNav] = useState<null | HTMLElement>(null);
-  const [anchorElUser, setAnchorElUser] = useState<null | HTMLElement>(null);
-  const [open, setOpen] = useState<boolean>(false);
-  const [selectedValue, setSelectedValue] = useState<Channel>(channels[0]);
-
-  const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
-    setAnchorElNav(event.currentTarget);
-  };
-  const handleOpenUserMenu = (event: React.MouseEvent<HTMLElement>) => {
-    setAnchorElUser(event.currentTarget);
-  };
-  const handleCloseNavMenu = () => {
-    setAnchorElNav(null);
-  };
-  const handleCloseUserMenu = () => {
-    setAnchorElUser(null);
-  };
-  const handleClose = () => {
-    setOpen(false);
-  };
-  const handleClickOpen = () => {
-    setOpen(true);
-  };
-  const handleListItemClick = () => {
-    console.log("クリックされました");
-  };
-
   // ブレークポイント　xs: 0px sm: 600px md: 900px lg: 1200px xl: 1536px
   return (
     <>
@@ -198,7 +203,7 @@ export default function Main() {
       <Container sx={{ display: "flex" }} maxWidth="xl">
         {/* ブラウザーの差異を平均化 */}
         <CssBaseline />
-        {/* ヘッダー AppBarが幅いっぱいになるzIndex*/}
+        {/* AppBarが幅いっぱいになるzIndex*/}
         <AppBar position="fixed" sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}>
           {/* disableGutters 左右の端の余白なし */}
           <Toolbar disableGutters>
