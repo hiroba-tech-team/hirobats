@@ -21,6 +21,7 @@ import {
   Box,
   Dialog,
   DialogTitle,
+  TextField,
 } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 import AddIcon from "@mui/icons-material/Add";
@@ -331,8 +332,10 @@ export default function Main() {
         </Drawer>
 
         {/* メインエリア */}
-        <Container sx={{ zIndex: 2 }} maxWidth="xl" ref={ref}>
+        <Container maxWidth="xl" ref={ref}>
+          {/* Appnav分の高さを下げる */}
           <Toolbar />
+          {/* dialogの内容をListセットに展開する */}
           {dialog.map((e: Dialogue, idx: number) => {
             if (e.id === current) {
               return (
@@ -360,7 +363,24 @@ export default function Main() {
               );
             }
           })}
-          {dialog.length === 0 && <Typography textAlign="center">メッセージがありません</Typography>}
+          <Box>
+            <TextField
+              id="filled-multiline-flexible"
+              label="Multiline"
+              multiline
+              maxRows={4}
+              value={value}
+              onChange={(e) => setValue(e.target.value)}
+              variant="filled"
+            />
+          </Box>
+          {value ? (
+            <Button onClick={handleSubmit}>送信する</Button>
+          ) : (
+            <Button onClick={handleSubmit} disabled>
+              送信する
+            </Button>
+          )}
         </Container>
 
         {/* モーダル */}
@@ -390,31 +410,6 @@ export default function Main() {
             </ListItem>
           </List>
         </Dialog>
-
-        {/* <div className="text-area col s12 m8 l8">
-          <div className="input-field col s11">
-            <i className="material-icons prefix">mode_edit</i>
-            <textarea
-              id="textarea"
-              className="materialize-textarea"
-              placeholder="メッセージを入力してください"
-              onChange={(e) => setValue(e.target.value)}
-              value={value}
-            ></textarea>
-          </div>
-        </div>
-        <div className="col s12 m2 l2">
-          {value ? (
-            <button className="btn waves-effect col s12 purple darken-1 white-text" onClick={handleSubmit}>
-              送信する
-            </button>
-          ) : (
-            <button className="btn waves-effect col s12 purple darken-1 white-text" onClick={handleSubmit} disabled>
-              送信する
-            </button>
-          )}
-        </div> */}
-        {/* フッター */}
       </Container>
     </>
   );
