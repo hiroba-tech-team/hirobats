@@ -19,10 +19,15 @@ import {
   Divider,
   Drawer,
   Box,
+  Dialog,
+  DialogTitle,
+  ListItemAvatar,
 } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 import InboxIcon from "@mui/icons-material/MoveToInbox";
 import MailIcon from "@mui/icons-material/Mail";
+import PersonIcon from "@mui/icons-material/Person";
+import AddIcon from "@mui/icons-material/Add";
 
 // 変数channel の型
 interface Channel {
@@ -157,7 +162,9 @@ export default function Main() {
   const settings = ["アカウント", "チャンネル", "ログアウト"];
 
   const [anchorElNav, setAnchorElNav] = useState<null | HTMLElement>(null);
-  const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(null);
+  const [anchorElUser, setAnchorElUser] = useState<null | HTMLElement>(null);
+  const [open, setOpen] = useState<boolean>(false);
+  const [selectedValue, setSelectedValue] = useState<Channel>(channels[0]);
 
   const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorElNav(event.currentTarget);
@@ -170,6 +177,15 @@ export default function Main() {
   };
   const handleCloseUserMenu = () => {
     setAnchorElUser(null);
+  };
+  const handleClose = () => {
+    setOpen(false);
+  };
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
+  const handleListItemClick = (value: number) => {
+    console.log(value);
   };
 
   // ブレークポイント　xs: 0px sm: 600px md: 900px lg: 1200px xl: 1536px
@@ -187,8 +203,8 @@ export default function Main() {
             <Typography variant="h3" noWrap component="div" sx={{ mr: 2, display: { xs: "none", md: "flex" } }}>
               hirobats
             </Typography>
-            {/* md未満の幅になった場合に表示される*/}
-            {/* <Box sx={{ flexGrow: 1, display: { xs: "flex", md: "none" } }}>
+            {/* md未満の幅になった場合に表示される */}
+            <Box sx={{ flexGrow: 1, display: { xs: "flex", md: "none" } }}>
               <IconButton
                 size="large"
                 aria-label="account of current user"
@@ -223,7 +239,7 @@ export default function Main() {
                   </MenuItem>
                 ))}
               </Menu>
-            </Box> */}
+            </Box>
             <Typography variant="h6" noWrap component="div" sx={{ flexGrow: 1, display: { xs: "flex", md: "none" } }}>
               hirobats
             </Typography>
@@ -268,11 +284,11 @@ export default function Main() {
             </Box>
           </Toolbar>
         </AppBar>
+
         {/* サイドメニュー */}
         <Drawer
           sx={{
             width: drawerWidth,
-            flexShrink: 0,
             "& .MuiDrawer-paper": {
               width: drawerWidth,
               boxSizing: "border-box", // パディング、境界、マージンを含ない
@@ -283,73 +299,56 @@ export default function Main() {
         >
           <Toolbar />
           <List>
-            <ListItem>
-              {users.avatar ? (
-                <Image className="responsive-img" src={users.avatar} alt="" height={70} width={70} />
-              ) : null}
+            {/* button要素を追加 */}
+            <ListItem button onClick={handleClickOpen}>
+              ch追加
             </ListItem>
-          </List>
-          {/* 分離ライン */}
-          <Divider />
-          {/* リスト内にchannelsを展開する */}
-          <List>
+            {/* 分離ライン */}
+            <Divider />
+            {/* リスト内にchannelsを展開する */}
             {channels.map((channel: Channel) => (
               <ListItem button key={channel.id} onClick={() => handleOnClick(channel.id)}>
                 <ListItemText primary={channel.name} />
               </ListItem>
             ))}
+            {/* 分離ライン */}
+            <Divider />
+            {/* リスト内にusersを展開する（ユーザー変更テスト用） */}
+            {testUser.map((testUser: User) => (
+              <ListItem button key={testUser.id} onClick={() => changeUser(testUser.id)}>
+                <ListItemText primary={testUser.name} />
+              </ListItem>
+            ))}
           </List>
         </Drawer>
-        <Toolbar />
+
+        {/* モーダル */}
+        <Dialog onClose={handleClose} open={open}>
+          <DialogTitle>チャンネル一覧</DialogTitle>
+          <List sx={{ pt: 0 }}>
+            {channels.map((channel: Channel) => (
+              <ListItem button key={channel.id} onClick={() => handleListItemClick(channel.id)}>
+                <ListItemAvatar>
+                  <Avatar sx={{ bgcolor: "primary" }}>
+                    <PersonIcon />
+                  </Avatar>
+                </ListItemAvatar>
+                <ListItemText primary={channel.name} />
+              </ListItem>
+            ))}
+            {/* モーダル内のチャンネル追加ボタン */}
+            <ListItem autoFocus button onClick={() => handleListItemClick}>
+              <ListItemAvatar>
+                <Avatar>
+                  <AddIcon />
+                </Avatar>
+              </ListItemAvatar>
+              <ListItemText primary="チャンネルを追加" />
+            </ListItem>
+          </List>
+        </Dialog>
         <div className="row">
           {/* サイドバー */}
-          <div className="side-area col s12 m2 l2 purple darken-1 hide-on-med-and-down">
-            <div className="user-container">
-              <div className="user-avatar"></div>
-              {/* ディスプレイ幅によって"hide-on-med-and-down" */}
-              <div className="user-name white-text">{users.name}</div>
-            </div>
-            <div>
-              <div className="white-text">
-                ch追加
-                <a className="btn-floating waves-effect modal-trigger" href="#modal1">
-                  <i className="material-icons purple darken-2">add</i>
-                </a>
-              </div>
-              {channels.map((channel: Channel) => {
-                return (
-                  <div className="channel-list hide-on-med-and-down" key={channel.id}>
-                    <ul>
-                      <li
-                        className="channel-name purple darken-2 z-depth-2 white-text"
-                        onClick={() => handleOnClick(channel.id)}
-                      >
-                        {channel.name}
-                      </li>
-                    </ul>
-                  </div>
-                );
-              })}
-            </div>
-            {/* ユーザー変更テストのため　ディスプレイ幅によって"hide-on-med-and-down" */}
-            <div className="hide-on-med-and-down">
-              <div className="user-change white-text">ユーザー変更</div>
-              {testUser.map((testUser: User) => {
-                return (
-                  <div className="channel-list" key={testUser.id}>
-                    <ul>
-                      <li
-                        className="channel-name purple darken-2 z-depth-2 white-text"
-                        onClick={() => changeUser(testUser.id)}
-                      >
-                        {testUser.name}
-                      </li>
-                    </ul>
-                  </div>
-                );
-              })}
-            </div>
-          </div>
           {/* モーダル */}
           <div id="modal1" className="modal">
             <div className="modal-content">
