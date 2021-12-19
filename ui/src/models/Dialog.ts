@@ -2,5 +2,5 @@ export default interface Dialog {
 	channelId: number;
 	message: string;
 	time: string;
-	userId: string;
+	userId: number;
 }

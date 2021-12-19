@@ -1,6 +1,9 @@
 import { db } from "../lib/firebase";
 import {collection, query, orderBy, getDocs } from 'firebase/firestore'
 import Dialog from "../models/Dialog"
+import {formatDate} from "../util/date-util";
+
+
 
 /**
  * Read: チャンネルのリストを取得する
@@ -38,7 +41,7 @@ export async function getDialogList() {
 		 */
 		newDialog.channelId = dialog.data().channel_id;
 		newDialog.message = dialog.data().message;
-		newDialog.time = dialog.data().time.toDate().toString();
+		newDialog.time = formatDate(dialog.data().time.toDate()).toString();
         newDialog.userId = dialog.data().user_id;
 
 		/**
