@@ -28,6 +28,9 @@ import InboxIcon from "@mui/icons-material/MoveToInbox";
 import MailIcon from "@mui/icons-material/Mail";
 import PersonIcon from "@mui/icons-material/Person";
 import AddIcon from "@mui/icons-material/Add";
+import RemoveIcon from "@mui/icons-material/Remove";
+import ProTip from "../components/ProTip";
+import Copyright from "../components/Copyright";
 
 // 変数channel の型
 interface Channel {
@@ -36,7 +39,7 @@ interface Channel {
   desc: string;
 }
 // 変数dialog の型
-interface Dialog {
+interface Dialogue {
   id: number;
   message: string;
   time: string;
@@ -66,7 +69,7 @@ export default function Main() {
     channel: [],
     login: false,
   });
-  const [dialog, setDialog] = useState<Dialog[]>([
+  const [dialog, setDialog] = useState<Dialogue[]>([
     {
       id: 0,
       message: "こんにちは",
@@ -184,8 +187,8 @@ export default function Main() {
   const handleClickOpen = () => {
     setOpen(true);
   };
-  const handleListItemClick = (value: number) => {
-    console.log(value);
+  const handleListItemClick = () => {
+    console.log("クリックされました");
   };
 
   // ブレークポイント　xs: 0px sm: 600px md: 900px lg: 1200px xl: 1536px
@@ -322,15 +325,50 @@ export default function Main() {
           </List>
         </Drawer>
 
+        {/* メインエリア */}
+        <Container sx={{ zIndex: 2 }} maxWidth="xl" ref={ref}>
+          <Toolbar />
+          {dialog.map((e: Dialogue, idx: number) => {
+            if (e.id === current) {
+              return (
+                <>
+                  {users.name === e.user ? (
+                    <List>
+                      <ListItem>
+                        <Image src={e.avatar} alt="" height={60} width={60} />
+                        <ListItemText primary={e.user} />
+                      </ListItem>
+                      <ListItemText primary={e.message} />
+                      <ListItemText primary={e.time} />
+                    </List>
+                  ) : (
+                    <List>
+                      <ListItem>
+                        <Image src={e.avatar} alt="" height={60} width={60} />
+                        <ListItemText primary={e.user} />
+                      </ListItem>
+                      <ListItemText primary={e.message} />
+                      <ListItemText primary={e.time} />
+                    </List>
+                  )}
+                </>
+              );
+            }
+          })}
+          {dialog.length === 0 && <Typography textAlign="center">メッセージがありません</Typography>}
+        </Container>
+
         {/* モーダル */}
         <Dialog onClose={handleClose} open={open}>
+          {/* モーダルタイトル */}
           <DialogTitle>チャンネル一覧</DialogTitle>
+          {/* リストを展開 パディングトップ*/}
           <List sx={{ pt: 0 }}>
             {channels.map((channel: Channel) => (
-              <ListItem button key={channel.id} onClick={() => handleListItemClick(channel.id)}>
+              <ListItem button key={channel.id} onClick={() => handleListItemClick}>
                 <ListItemAvatar>
-                  <Avatar sx={{ bgcolor: "primary" }}>
-                    <PersonIcon />
+                  <Avatar>
+                    <RemoveIcon />
                   </Avatar>
                 </ListItemAvatar>
                 <ListItemText primary={channel.name} />
@@ -347,85 +385,31 @@ export default function Main() {
             </ListItem>
           </List>
         </Dialog>
-        <div className="row">
-          {/* サイドバー */}
-          {/* モーダル */}
-          <div id="modal1" className="modal">
-            <div className="modal-content">
-              <a className="modal-text">追加したいチャンネルを選んでね</a>
-            </div>
-            <div className="modal-footer">
-              <a href="#!" className="modal-close purple darken-2 z-depth-2 waves-effect btn white-text">
-                決定
-              </a>
-            </div>
-          </div>
-          {/* メッセージエリア */}
-          <div className="message-area col s12 m10 l10">
-            <div className="message-room" ref={ref}>
-              {dialog.map((e: Dialog, idx: number) => {
-                if (e.id === current) {
-                  return (
-                    <div key={idx}>
-                      {users.name === e.user ? (
-                        <div className="message-container">
-                          <div>
-                            <Image className="e-image responsive-img" src={e.avatar} alt="" height={60} width={60} />
-                            <div className="black-text">{e.user}</div>
-                          </div>
-                          <div>
-                            <div className="e-message black-text balloon">{e.message}</div>
-                            <div className="e-time black-text">{e.time}</div>
-                          </div>
-                        </div>
-                      ) : (
-                        <div className="message-container">
-                          <div>
-                            <Image className="e-image responsive-img" src={e.avatar} alt="" height={60} width={60} />
-                            <div className="black-text">{e.user}</div>
-                          </div>
-                          <div>
-                            <div className="e-message black-text balloon">{e.message}</div>
-                            <div className="e-time black-text">{e.time}</div>
-                          </div>
-                        </div>
-                      )}
-                    </div>
-                  );
-                }
-              })}
-              {dialog.length === 0 && <div className="white-text">メッセージがありません</div>}
-            </div>
-          </div>
-          {/* テキストエリア */}
-          <div className="text-area col s12 m8 l8">
-            <div className="input-field col s11">
-              <i className="material-icons prefix">mode_edit</i>
-              <textarea
-                id="textarea"
-                className="materialize-textarea"
-                placeholder="メッセージを入力してください"
-                onChange={(e) => setValue(e.target.value)}
-                value={value}
-              ></textarea>
-            </div>
-          </div>
-          <div className="col s12 m2 l2">
-            {value ? (
-              <button className="btn waves-effect col s12 purple darken-1 white-text" onClick={handleSubmit}>
-                送信する
-              </button>
-            ) : (
-              <button className="btn waves-effect col s12 purple darken-1 white-text" onClick={handleSubmit} disabled>
-                送信する
-              </button>
-            )}
+
+        {/* <div className="text-area col s12 m8 l8">
+          <div className="input-field col s11">
+            <i className="material-icons prefix">mode_edit</i>
+            <textarea
+              id="textarea"
+              className="materialize-textarea"
+              placeholder="メッセージを入力してください"
+              onChange={(e) => setValue(e.target.value)}
+              value={value}
+            ></textarea>
           </div>
         </div>
+        <div className="col s12 m2 l2">
+          {value ? (
+            <button className="btn waves-effect col s12 purple darken-1 white-text" onClick={handleSubmit}>
+              送信する
+            </button>
+          ) : (
+            <button className="btn waves-effect col s12 purple darken-1 white-text" onClick={handleSubmit} disabled>
+              送信する
+            </button>
+          )}
+        </div> */}
         {/* フッター */}
-        <footer className="purple darken-2">
-          <div className="copy-right">© 2021 hiroba.tech</div>
-        </footer>
       </Container>
     </>
   );
