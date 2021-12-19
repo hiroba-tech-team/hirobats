@@ -2,18 +2,27 @@ import React, { useState, useEffect, createRef } from "react";
 import Image from "next/image";
 import {
   Container,
+  CssBaseline,
   AppBar,
   Toolbar,
   Typography,
-  Box,
   IconButton,
   Menu,
   Button,
   Avatar,
   Tooltip,
   MenuItem,
+  List,
+  ListItem,
+  ListItemIcon,
+  ListItemText,
+  Divider,
+  Drawer,
+  Box,
 } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
+import InboxIcon from "@mui/icons-material/MoveToInbox";
+import MailIcon from "@mui/icons-material/Mail";
 
 // 変数channel の型
 interface Channel {
@@ -99,6 +108,7 @@ export default function Main() {
   const [current, setCurrent] = useState<number>(0); // 現在の選択されているチャンネル
   const [value, setValue] = useState<string>(""); // テキストボックスに入力されている値
   const ref = createRef<HTMLDivElement>(); // メッセージエリアを参照するためのマーカー
+  const drawerWidth = 240; // サイドメニューの幅
 
   const handleOnClick = (e: number) => {
     setCurrent(e);
@@ -145,10 +155,8 @@ export default function Main() {
 
   const pages = ["チャンネル", channels[current].name];
   const settings = ["アカウント", "チャンネル", "ログアウト"];
-  ch: {
-    channels[current].name;
-  }
-  const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null);
+
+  const [anchorElNav, setAnchorElNav] = useState<null | HTMLElement>(null);
   const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(null);
 
   const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
@@ -167,109 +175,137 @@ export default function Main() {
   // ブレークポイント　xs: 0px sm: 600px md: 900px lg: 1200px xl: 1536px
   return (
     <>
-      {/* Materialize導入によりマージンの再設定を削除 */}
-      <Container maxWidth="xl">
-        {/* ヘッダー */}
-        <AppBar position="static">
-          <Container maxWidth="xl">
-            {/* disableGutters 左右の端の余白なし */}
-            <Toolbar disableGutters>
-              {/* varient 文字の大きさ  noWrap 文字の折り返しなし sx テーマへのアクセス mr マージンライト */}
-              <Typography variant="h3" noWrap component="div" sx={{ mr: 2, display: { xs: "none", md: "flex" } }}>
-                hirobats
-              </Typography>
-              {/* md未満の幅になった場合に表示される*/}
-              <Box sx={{ flexGrow: 1, display: { xs: "flex", md: "none" } }}>
-                <IconButton
-                  size="large"
-                  aria-label="account of current user"
-                  aria-controls="menu-appbar"
-                  aria-haspopup="true"
-                  onClick={handleOpenNavMenu}
-                  color="inherit"
-                >
-                  <MenuIcon />
-                </IconButton>
-                <Menu
-                  id="menu-appbar"
-                  anchorEl={anchorElNav}
-                  anchorOrigin={{
-                    vertical: "bottom",
-                    horizontal: "left",
-                  }}
-                  keepMounted
-                  transformOrigin={{
-                    vertical: "top",
-                    horizontal: "left",
-                  }}
-                  open={Boolean(anchorElNav)}
-                  onClose={handleCloseNavMenu}
-                  sx={{
-                    display: { xs: "block", md: "none" },
-                  }}
-                >
-                  {pages.map((page) => (
-                    <MenuItem key={page} onClick={handleCloseNavMenu}>
-                      <Typography textAlign="center">{page}</Typography>
-                    </MenuItem>
-                  ))}
-                </Menu>
-              </Box>
-              <Typography variant="h6" noWrap component="div" sx={{ flexGrow: 1, display: { xs: "flex", md: "none" } }}>
-                hirobats
-              </Typography>
-              <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}>
+      {/* 大枠はContainerで包む、sxはcssにアクセスする maxのブレークポイントを設定 */}
+      <Container sx={{ display: "flex" }} maxWidth="xl">
+        {/* ブラウザーの差異を平均化 */}
+        <CssBaseline />
+        {/* ヘッダー AppBarが幅いっぱいになるzIndex*/}
+        <AppBar position="fixed" sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}>
+          {/* disableGutters 左右の端の余白なし */}
+          <Toolbar disableGutters>
+            {/* varient 文字の大きさ  noWrap 文字の折り返しなし sx テーマへのアクセス mr マージンライト */}
+            <Typography variant="h3" noWrap component="div" sx={{ mr: 2, display: { xs: "none", md: "flex" } }}>
+              hirobats
+            </Typography>
+            {/* md未満の幅になった場合に表示される*/}
+            {/* <Box sx={{ flexGrow: 1, display: { xs: "flex", md: "none" } }}>
+              <IconButton
+                size="large"
+                aria-label="account of current user"
+                aria-controls="menu-appbar"
+                aria-haspopup="true"
+                onClick={handleOpenNavMenu}
+                color="inherit"
+              >
+                <MenuIcon />
+              </IconButton>
+              <Menu
+                id="menu-appbar"
+                anchorEl={anchorElNav}
+                anchorOrigin={{
+                  vertical: "bottom",
+                  horizontal: "left",
+                }}
+                keepMounted
+                transformOrigin={{
+                  vertical: "top",
+                  horizontal: "left",
+                }}
+                open={Boolean(anchorElNav)}
+                onClose={handleCloseNavMenu}
+                sx={{
+                  display: { xs: "block", md: "none" },
+                }}
+              >
                 {pages.map((page) => (
-                  // my マージントップ、マージンボトム
-                  <Button key={page} onClick={handleCloseNavMenu} sx={{ my: 2, color: "white", display: "block" }}>
-                    {page}
-                  </Button>
+                  <MenuItem key={page} onClick={handleCloseNavMenu}>
+                    <Typography textAlign="center">{page}</Typography>
+                  </MenuItem>
                 ))}
-              </Box>
-              <Box sx={{ flexGrow: 0 }}>
-                {/* // Tooltip 吹き出し */}
-                <Tooltip title="セッティング">
-                  {/* p パディング */}
-                  <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                    <Avatar alt={users.name} src={users.avatar} />
-                  </IconButton>
-                </Tooltip>
-                <Menu
-                  sx={{ mt: "45px" }}
-                  id="menu-appbar"
-                  anchorEl={anchorElUser}
-                  anchorOrigin={{
-                    vertical: "top",
-                    horizontal: "right",
-                  }}
-                  keepMounted
-                  transformOrigin={{
-                    vertical: "top",
-                    horizontal: "right",
-                  }}
-                  open={Boolean(anchorElUser)}
-                  onClose={handleCloseUserMenu}
-                >
-                  {settings.map((setting) => (
-                    <MenuItem key={setting} onClick={handleCloseNavMenu}>
-                      <Typography textAlign="center">{setting}</Typography>
-                    </MenuItem>
-                  ))}
-                </Menu>
-              </Box>
-            </Toolbar>
-          </Container>
+              </Menu>
+            </Box> */}
+            <Typography variant="h6" noWrap component="div" sx={{ flexGrow: 1, display: { xs: "flex", md: "none" } }}>
+              hirobats
+            </Typography>
+            <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}>
+              {pages.map((page) => (
+                // my = マージントップ&マージンボトム
+                <Button key={page} onClick={handleCloseNavMenu} sx={{ my: 2, color: "white", display: "block" }}>
+                  {page}
+                </Button>
+              ))}
+            </Box>
+            <Box sx={{ flexGrow: 0 }}>
+              {/* // Tooltip 吹き出し */}
+              <Tooltip title="セッティング">
+                {/* p パディング */}
+                <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
+                  <Avatar alt={users.name} src={users.avatar} />
+                </IconButton>
+              </Tooltip>
+              <Menu
+                sx={{ mt: "45px" }}
+                id="menu-appbar"
+                anchorEl={anchorElUser}
+                anchorOrigin={{
+                  vertical: "top",
+                  horizontal: "right",
+                }}
+                keepMounted
+                transformOrigin={{
+                  vertical: "top",
+                  horizontal: "right",
+                }}
+                open={Boolean(anchorElUser)}
+                onClose={handleCloseUserMenu}
+              >
+                {settings.map((setting) => (
+                  <MenuItem key={setting} onClick={handleCloseNavMenu}>
+                    <Typography textAlign="center">{setting}</Typography>
+                  </MenuItem>
+                ))}
+              </Menu>
+            </Box>
+          </Toolbar>
         </AppBar>
-        {/* グリッド表示のためclassをrowに設定 */}
+        {/* サイドメニュー */}
+        <Drawer
+          sx={{
+            width: drawerWidth,
+            flexShrink: 0,
+            "& .MuiDrawer-paper": {
+              width: drawerWidth,
+              boxSizing: "border-box", // パディング、境界、マージンを含ない
+            },
+          }}
+          variant="permanent" // 永続的に表示
+          anchor="left" // 左に表示
+        >
+          <Toolbar />
+          <List>
+            <ListItem>
+              {users.avatar ? (
+                <Image className="responsive-img" src={users.avatar} alt="" height={70} width={70} />
+              ) : null}
+            </ListItem>
+          </List>
+          {/* 分離ライン */}
+          <Divider />
+          {/* リスト内にchannelsを展開する */}
+          <List>
+            {channels.map((channel: Channel) => (
+              <ListItem button key={channel.id} onClick={() => handleOnClick(channel.id)}>
+                <ListItemText primary={channel.name} />
+              </ListItem>
+            ))}
+          </List>
+        </Drawer>
+        <Toolbar />
         <div className="row">
           {/* サイドバー */}
           <div className="side-area col s12 m2 l2 purple darken-1 hide-on-med-and-down">
             <div className="user-container">
-              <div className="user-avatar">
-                {users.avatar ? (
-                  <Image className="responsive-img" src={users.avatar} alt="" height={70} width={70} />
-                ) : null}
-              </div>
+              <div className="user-avatar"></div>
               {/* ディスプレイ幅によって"hide-on-med-and-down" */}
               <div className="user-name white-text">{users.name}</div>
             </div>
