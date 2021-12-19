@@ -1,10 +1,10 @@
-import { db } from "./firebase";
+import { db } from "../lib/firebase";
 import {collection, query, orderBy, onSnapshot, getDocs } from 'firebase/firestore'
 import Channel from "../models/Channel"
 
 /**
  * Read: チャンネルのリストを取得する
- * @returns channelArr 
+ * @returns channelArr
  */
 export async function getChannelList() {
 
@@ -27,14 +27,13 @@ export async function getChannelList() {
 	 * channelはドキュメント
 	 */
 	querySnapshot.forEach((channel) => {
-		
 		// データが取得できているか確認するときに使用する。
 		//console.log(channel.id, " => ", channel.data());
 		const newChannel = channel.data() as Channel;
 
 		/**
 		 * doc.data()は、クエリドキュメントスナップショットに対して未定義になることはない
-		 * 
+		 *
 		 * つまり channel.data().desc など descではなく全く違う言葉(appleなど)にしてもコード上ではエラーになることはない
 		 */
 		newChannel.id = channel.data().id;

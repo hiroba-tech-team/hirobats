@@ -1,6 +1,7 @@
 import React, { useState, useEffect, createRef } from "react";
 import Image from "next/image";
-import {getChannelList} from "../src/lib/channelManager";
+import {getChannelList} from "../src/provider/channel-provider";
+import {getDialogList} from "../src/provider/dialog-provider";
 import Channel from "../src/models/Channel";
 import Dialog from "../src/models/Dialog";
 import User from "../src/models/User";
@@ -9,19 +10,20 @@ import User from "../src/models/User";
 export default function Main() {
   const [channels, setChannels] = useState<Channel[]>([]);
   const [users, setUsers] = useState<string>("ひろばくん");
-  const [dialog, setDialog] = useState<Dialog[]>([
-    {
-      id: 0,
-      message: "こんにちは",
-      time: "15:10",
-      user: "ひろばくん",
-    },
-    { id: 0, message: "はじめまして", time: "16:10", user: "ひろばさん" },
-    { id: 1, message: "ありがとう", time: "17:10", user: "ひろばくん" },
-    { id: 1, message: "どういたしまして", time: "18:10", user: "ひろばくん" },
-    { id: 2, message: "こんにちは", time: "19:10", user: "ひろばくん" },
-    { id: 2, message: "さようなら", time: "20:10", user: "ひろばくん" },
-  ]);
+  // const [dialog, setDialog] = useState<Dialog[]>([
+  //   {
+  //     channelId: 0,
+  //     message: "こんにちは",
+  //     time: "15:10",
+  //     userId: "ひろばくん",
+  //   },
+  //   { channelId: 0, message: "はじめまして", time: "16:10", userId: "ひろばさん" },
+  //   { channelId: 1, message: "ありがとう", time: "17:10", userId: "ひろばくん" },
+  //   { channelId: 1, message: "どういたしまして", time: "18:10", userId: "ひろばくん" },
+  //   { channelId: 2, message: "こんにちは", time: "19:10", userId: "ひろばくん" },
+  //   { channelId: 2, message: "さようなら", time: "20:10", userId: "ひろばくん" },
+  // ]);
+  const [dialog, setDialog] = useState<Dialog[]>([]);
   const [current, setCurrent] = useState<number>(0); // 現在の選択されているチャンネル
   const [value, setValue] = useState<string>(""); // テキストボックスに入力されている値
   const ref = createRef<HTMLDivElement>(); // メッセージエリアを参照するためのマーカー
@@ -31,7 +33,7 @@ export default function Main() {
   };
 
   const handleSubmit = () => {
-    dialog.push({ id: current, message: value, time: "21:20", user: users});
+    dialog.push({ channelId: current, message: value, time: (new Date()).toString(), userId: users});
     setDialog(dialog);
     setValue("");
   };
@@ -39,8 +41,17 @@ export default function Main() {
   //ここでチャンネルのデータを取得する。
   getChannelList().then(channel => {
     //データが取得できているか確認する時に使用する
-    //console.log(channel);
+    console.log(channel);
     setChannels(channel);
+  }).catch(e => {
+    console.log("データがありませんでした。");
+  });
+
+  //ここでチャンネルに紐づくデータを取得する。
+  getDialogList().then(dialog => {
+    //データが取得できているか確認する時に使用する
+    console.log(dialog);
+    setDialog(dialog);
   }).catch(e => {
     console.log("データがありませんでした。")
   });
@@ -181,10 +192,10 @@ export default function Main() {
           >
             <div ref={ref} style={{ paddingBottom: "90px" }}>
               {dialog.map((e, idx) => {
-                if (e.id === current) {
+                if (e.channelId === current) {
                   return (
                     <div key={idx}>
-                      {users === e.user ? (
+                      {users === e.userId ? (
                         <div style={{ textAlign: "left" }}>
                           <div
                             style={{
@@ -194,7 +205,7 @@ export default function Main() {
                               fontWeight: "bold",
                             }}
                           >
-                            {e.user}
+                            {e.userId}
                           </div>
                           <div
                             style={{
@@ -251,7 +262,7 @@ export default function Main() {
                               fontWeight: "bold",
                             }}
                           >
-                            {e.user}
+                            {e.userId}
                           </div>
                           <div
                             style={{
