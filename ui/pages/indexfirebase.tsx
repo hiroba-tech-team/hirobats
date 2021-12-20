@@ -1,10 +1,16 @@
 import React, { useState, useEffect, createRef } from "react";
 import Image from "next/image";
-import {getChannelList} from "../src/provider/channel-provider";
-import {getDialogList} from "../src/provider/dialog-provider";
+
+//Providerのimport
+import { getChannelList } from "../src/provider/channel-provider";
+import { getDialogList } from "../src/provider/dialog-provider";
+import { getChannelsV2 } from "../src/provider/channels-demo";
+
+//modelのimport
 import Channel from "../src/models/Channel";
 import Dialog from "../src/models/Dialog";
 import User from "../src/models/User";
+
 
 
 export default function Main() {
@@ -13,22 +19,10 @@ export default function Main() {
     id: 0,
     name: "ひろばくん",
     avatar: "https://www.pinclipart.com/picdir/big/155-1559316_male-avatar-clipart.png",
-    channel: ["#サンプル", "打合せ", "定例"],
+    channel: [0, 1, 2,3],
     login: true,
   });
-  // const [dialog, setDialog] = useState<Dialog[]>([
-  //   {
-  //     channelId: 0,
-  //     message: "こんにちは",
-  //     time: "15:10",
-  //     userId: "ひろばくん",
-  //   },
-  //   { channelId: 0, message: "はじめまして", time: "16:10", userId: "ひろばさん" },
-  //   { channelId: 1, message: "ありがとう", time: "17:10", userId: "ひろばくん" },
-  //   { channelId: 1, message: "どういたしまして", time: "18:10", userId: "ひろばくん" },
-  //   { channelId: 2, message: "こんにちは", time: "19:10", userId: "ひろばくん" },
-  //   { channelId: 2, message: "さようなら", time: "20:10", userId: "ひろばくん" },
-  // ]);
+
   const [dialog, setDialog] = useState<Dialog[]>([]);
   const [current, setCurrent] = useState<number>(0); // 現在の選択されているチャンネル
   const [value, setValue] = useState<string>(""); // テキストボックスに入力されている値
@@ -51,24 +45,34 @@ export default function Main() {
   };
 
   //ここでチャンネルのデータを取得する。
-  if(channels.length==0){
-    getChannelList().then(channel => {
-      //データが取得できているか確認する時に使用する
-      setChannels(channel);
-    }).catch(e => {
-      console.log("データがありませんでした。");
-    });
-    console.log(channels);
+  const getChannel = () => {
+    if(channels.length==0){
+      getChannelList().then(channel => {
+        //データが取得できているか確認する時に使用する
+        //console.log(channel);
+        setChannels(channel);
+      }).catch(e => {
+        console.log("データがありませんでした。");
+      });
+    }
   }
 
   //ここでチャンネルに紐づくデータを取得する。
-  getDialogList().then(dialog => {
-    //データが取得できているか確認する時に使用する
-    console.log(dialog);
-    setDialog(dialog);
-  }).catch(e => {
-    console.log("データがありませんでした。")
-  });
+  const getDialog = () => {
+    getDialogList().then(dialog => {
+      //データが取得できているか確認する時に使用する
+      // console.log(dialog);
+      setDialog(dialog);
+    }).catch(e => {
+      console.log("データがありませんでした。")
+    });
+  }
+
+  useEffect(() => {
+    //getChannel();
+    getChannelsV2(users.channel,setChannels);
+    getDialog();
+  },[]);
 
   useEffect(() => {
     ref!.current!.scrollIntoView({

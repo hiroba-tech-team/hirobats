@@ -29,7 +29,8 @@ export async function getChannelList() {
 	querySnapshot.forEach((channel) => {
 		// データが取得できているか確認するときに使用する。
 		//console.log(channel.id, " => ", channel.data());
-		const newChannel = channel.data() as Channel;
+		//const newChannel = channel.data() as Channel;
+		const newChannel = {} as Channel;
 
 		/**
 		 * doc.data()は、クエリドキュメントスナップショットに対して未定義になることはない
@@ -39,6 +40,7 @@ export async function getChannelList() {
 		newChannel.id = channel.data().id;
 		newChannel.name = channel.data().name;
 		newChannel.desc = channel.data().desc;
+
 
 		/**
 		 * セットした値を配列に格納する

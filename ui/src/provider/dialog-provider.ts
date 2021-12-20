@@ -32,7 +32,7 @@ export async function getDialogList() {
 	querySnapshot.forEach((dialog) => {
 		// データが取得できているか確認するときに使用する。
 		//console.log(channel.id, " => ", channel.data());
-		const newDialog = dialog.data() as Dialog;
+		const newDialog = {} as Dialog;
 
 		/**
 		 * doc.data()は、クエリドキュメントスナップショットに対して未定義になることはない
