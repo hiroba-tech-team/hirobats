@@ -1,20 +1,23 @@
-import { db } from "./firebase";
-import {collection, query, orderBy, onSnapshot, getDocs } from 'firebase/firestore'
-import Channel from "../models/Channel"
+import { db } from "../lib/firebase";
+import {collection, query, orderBy, getDocs } from 'firebase/firestore'
+import Dialog from "../models/Dialog"
+import {formatDate} from "../util/date-util";
+
+
 
 /**
  * Read: チャンネルのリストを取得する
- * @returns channelArr 
+ * @returns channelArr
  */
-export async function getChannelList() {
+export async function getDialogList() {
 
 	//最後にstate(Channel)に格納するためのChannel配列を作成
-	let channelArr: Channel[] = [];
+	let dialogArr: Dialog[] = [];
 
 	/**
 	 * どのコレクションからどのような条件で取得するかを決める
 	 */
-		const q = query(collection(db, "channels"),orderBy('id','asc'));
+		const q = query(collection(db, "dialog"),orderBy('time','asc'));
 
 	/**
 	 * getDocsはコレクションを取得（コレクションはDBで言うテーブルみたいなもの）
@@ -26,26 +29,26 @@ export async function getChannelList() {
 	 * 取得したコレクションの中にあるドキュメントをすべてループさせる
 	 * channelはドキュメント
 	 */
-	querySnapshot.forEach((channel) => {
-		
+	querySnapshot.forEach((dialog) => {
 		// データが取得できているか確認するときに使用する。
 		//console.log(channel.id, " => ", channel.data());
-		const newChannel = channel.data() as Channel;
+		const newDialog = {} as Dialog;
 
 		/**
 		 * doc.data()は、クエリドキュメントスナップショットに対して未定義になることはない
-		 * 
+		 *
 		 * つまり channel.data().desc など descではなく全く違う言葉(appleなど)にしてもコード上ではエラーになることはない
 		 */
-		newChannel.id = channel.data().id;
-		newChannel.name = channel.data().name;
-		newChannel.desc = channel.data().desc;
+		newDialog.channelId = dialog.data().channel_id;
+		newDialog.message = dialog.data().message;
+		newDialog.time = formatDate(dialog.data().time.toDate()).toString();
+        newDialog.userId = dialog.data().user_id;
 
 		/**
 		 * セットした値を配列に格納する
 		 */
-		channelArr.push(newChannel);
+		dialogArr.push(newDialog);
 	});
 
-	return channelArr;
+	return dialogArr;
 }

@@ -1,70 +1,64 @@
 import React, { useState, useEffect, createRef } from "react";
 import Image from "next/image";
-import {getChannelList} from "../src/lib/channelManager"
+
+//Providerのimport
+import { getChannelList } from "../src/provider/channel-provider";
+import { getDialogList } from "../src/provider/dialog-provider";
+
+//modelのimport
+import Channel from "../src/models/Channel";
+import Dialog from "../src/models/Dialog";
+import User from "../src/models/User";
 
 
-
-// 変数channel の型
-interface Channel {
-  id: number;
-  name: string;
-  desc: string;
-}
-// 変数dialog の型
-interface Dialog {
-  id: number;
-  message: string;
-  time: string;
-  user: string;
-}
-// 変数user の型（未定）
-interface User {
-  id: number;
-  name: string;
-  avatar: string;
-  channel: string[];
-  login: boolean;
-}
 
 export default function Main() {
   const [channels, setChannels] = useState<Channel[]>([]);
-	//const [channels, setChannels] = useState<Channel[]>([]);
-  const [users, setUsers] = useState<string>("ひろばくん");
-  const [dialog, setDialog] = useState<Dialog[]>([
-    {
-      id: 0,
-      message: "こんにちは",
-      time: "15:10",
-      user: "ひろばくん",
-    },
-    { id: 0, message: "はじめまして", time: "16:10", user: "ひろばさん" },
-    { id: 1, message: "ありがとう", time: "17:10", user: "ひろばくん" },
-    { id: 1, message: "どういたしまして", time: "18:10", user: "ひろばくん" },
-    { id: 2, message: "こんにちは", time: "19:10", user: "ひろばくん" },
-    { id: 2, message: "さようなら", time: "20:10", user: "ひろばくん" },
-  ]);
+  const [users, setUsers] = useState<User>({
+    id: 0,
+    name: "ひろばくん",
+    avatar: "https://www.pinclipart.com/picdir/big/155-1559316_male-avatar-clipart.png",
+    channel: [0, 1, 2,3],
+    login: true,
+  });
+
+  const [dialog, setDialog] = useState<Dialog[]>([]);
   const [current, setCurrent] = useState<number>(0); // 現在の選択されているチャンネル
   const [value, setValue] = useState<string>(""); // テキストボックスに入力されている値
   const ref = createRef<HTMLDivElement>(); // メッセージエリアを参照するためのマーカー
+
 
   const handleOnClick = (e: number) => {
     setCurrent(e);
   };
 
   const handleSubmit = () => {
-    dialog.push({ id: current, message: value, time: "21:20", user: users});
+    dialog.push({
+      channelId: current,
+      message: value,
+      time: (new Date()).toString(),
+      userId: users.id
+    });
     setDialog(dialog);
     setValue("");
   };
 
-  //ここでチャンネルのデータを取得する。
-  getChannelList().then(channel => {
-    //データが取得できているか確認する時に使用する
-    //console.log(channel);
-    setChannels(channel);
-  }).catch(e => {
-    console.log("データがありませんでした。")
-  });
+  //ここでチャンネルに紐づくデータを取得する。
+  const getDialog = () => {
+    getDialogList().then(dialog => {
+      //データが取得できているか確認する時に使用する
+      // console.log(dialog);
+      setDialog(dialog);
+    }).catch(e => {
+      console.log("データがありませんでした。")
+    });
+  }
+
+  useEffect(() => {
+    //getChannel();
+    getChannelList(users.channel,setChannels);
+    getDialog();
+  },[]);
 
   useEffect(() => {
     ref!.current!.scrollIntoView({
@@ -117,7 +111,6 @@ export default function Main() {
                 fontSize: "20px",
               }}
             >
-              {users}
             </div>
           </div>
           <hr />
@@ -202,10 +195,10 @@ export default function Main() {
           >
             <div ref={ref} style={{ paddingBottom: "90px" }}>
               {dialog.map((e, idx) => {
-                if (e.id === current) {
+                if (e.channelId === current) {
                   return (
                     <div key={idx}>
-                      {users === e.user ? (
+                      {users.id === e.userId ? (
                         <div style={{ textAlign: "left" }}>
                           <div
                             style={{
@@ -215,7 +208,7 @@ export default function Main() {
                               fontWeight: "bold",
                             }}
                           >
-                            {e.user}
+                            {e.userId}
                           </div>
                           <div
                             style={{
@@ -272,7 +265,7 @@ export default function Main() {
                               fontWeight: "bold",
                             }}
                           >
-                            {e.user}
+                            {e.userId}
                           </div>
                           <div
                             style={{
