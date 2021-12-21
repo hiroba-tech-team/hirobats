@@ -2,13 +2,13 @@ import React, { useState, useEffect, createRef } from "react";
 import Image from "next/image";
 
 //Providerのimport
-import { getChannelList } from "../src/provider/channel-provider";
-import { getDialogList } from "../src/provider/dialog-provider";
+import { getChannelList } from "../provider/channel-provider";
+import { getDialogList } from "../provider/dialog-provider";
 
 //modelのimport
-import Channel from "../src/models/Channel";
-import Dialog from "../src/models/Dialog";
-import User from "../src/models/User";
+import Channel from "../models/Channel";
+import Dialog from "../models/Dialog";
+import User from "../models/User";
 
 
 
