@@ -1,6 +1,6 @@
-export default interface Dialog {
+export default interface Message {
 	channelId: number;
-	message: string;
+	text: string;
 	time: string;
 	userId: number;
 }

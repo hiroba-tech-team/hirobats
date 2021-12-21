@@ -3,14 +3,12 @@ import Image from "next/image";
 
 //Providerのimport
 import { getChannelList } from "../provider/channel-provider";
-import { getDialogList } from "../provider/dialog-provider";
+import { getMessageList } from "../provider/message-provider";
 
 //modelのimport
 import Channel from "../models/Channel";
-import Dialog from "../models/Dialog";
+import Message from "../models/Message";
 import User from "../models/User";
-
-
 
 export default function Main() {
   const [channels, setChannels] = useState<Channel[]>([]);
@@ -22,7 +20,7 @@ export default function Main() {
     login: true,
   });
 
-  const [dialog, setDialog] = useState<Dialog[]>([]);
+  const [message, setMessage] = useState<Message[]>([]);
   const [current, setCurrent] = useState<number>(0); // 現在の選択されているチャンネル
   const [value, setValue] = useState<string>(""); // テキストボックスに入力されている値
   const ref = createRef<HTMLDivElement>(); // メッセージエリアを参照するためのマーカー
@@ -33,22 +31,22 @@ export default function Main() {
   };
 
   const handleSubmit = () => {
-    dialog.push({
+    message.push({
       channelId: current,
-      message: value,
+      text: value,
       time: (new Date()).toString(),
       userId: users.id
     });
-    setDialog(dialog);
+    setMessage(message);
     setValue("");
   };
 
   //ここでチャンネルに紐づくデータを取得する。
   const getDialog = () => {
-    getDialogList().then(dialog => {
+    getMessageList().then(message => {
       //データが取得できているか確認する時に使用する
       // console.log(dialog);
-      setDialog(dialog);
+      setMessage(message);
     }).catch(e => {
       console.log("データがありませんでした。")
     });
@@ -194,7 +192,7 @@ export default function Main() {
             }}
           >
             <div ref={ref} style={{ paddingBottom: "90px" }}>
-              {dialog.map((e, idx) => {
+              {message.map((e, idx) => {
                 if (e.channelId === current) {
                   return (
                     <div key={idx}>
@@ -240,7 +238,7 @@ export default function Main() {
                                   borderRadius: "12px",
                                 }}
                               >
-                                {e.message}
+                                {e.text}
                               </div>
                               <div
                                 style={{
@@ -296,7 +294,7 @@ export default function Main() {
                                   borderRadius: "12px",
                                 }}
                               >
-                                {e.message}
+                                {e.text}
                               </div>
                               <div
                                 style={{
@@ -316,7 +314,7 @@ export default function Main() {
                   );
                 }
               })}
-              {dialog.length === 0 && <div style={{ textAlign: "center", marginTop: 20 }}>メッセージがありません</div>}
+              {message.length === 0 && <div style={{ textAlign: "center", marginTop: 20 }}>メッセージがありません</div>}
             </div>
           </div>
 
