@@ -1,5 +1,5 @@
 import { db } from "../lib/firebase";
-import {collection, query, orderBy, getDocs } from 'firebase/firestore'
+import {collection,addDoc, query, orderBy, getDocs, Timestamp } from 'firebase/firestore'
 import Message from "../models/Message"
 import {formatDate} from "../util/date-util";
 
@@ -51,4 +51,16 @@ export async function getMessageList() {
 	});
 
 	return messageArr;
+}
+
+export async function addMessageList(message: Message) {
+
+	const docRef = await addDoc(collection(db, "message"), {
+		channel_id: message.channelId,
+		text: message.text,
+		user_id: message.userId,
+		time: Timestamp.fromDate(new Date()),
+	});
+	console.log("Document written with ID: ", docRef.id);
+
 }
