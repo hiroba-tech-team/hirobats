@@ -4,7 +4,6 @@ import Image from "next/image";
 //Providerのimport
 import { getChannelList } from "../src/provider/channel-provider";
 import { getDialogList } from "../src/provider/dialog-provider";
-import { getChannelsV2 } from "../src/provider/channels-demo";
 
 //modelのimport
 import Channel from "../src/models/Channel";
@@ -44,19 +43,6 @@ export default function Main() {
     setValue("");
   };
 
-  //ここでチャンネルのデータを取得する。
-  const getChannel = () => {
-    if(channels.length==0){
-      getChannelList().then(channel => {
-        //データが取得できているか確認する時に使用する
-        //console.log(channel);
-        setChannels(channel);
-      }).catch(e => {
-        console.log("データがありませんでした。");
-      });
-    }
-  }
-
   //ここでチャンネルに紐づくデータを取得する。
   const getDialog = () => {
     getDialogList().then(dialog => {
@@ -70,7 +56,7 @@ export default function Main() {
 
   useEffect(() => {
     //getChannel();
-    getChannelsV2(users.channel,setChannels);
+    getChannelList(users.channel,setChannels);
     getDialog();
   },[]);
 
