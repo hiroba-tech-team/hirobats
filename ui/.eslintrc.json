@@ -1,3 +1,6 @@
 {
-  "extends": ["next/core-web-vitals", "next/babel"] // next.config.jsエラー回避のため"next/babel"を追記
+  "extends": ["next/core-web-vitals", "next/babel"], // next.config.jsエラー回避のため"next/babel"を追記
+  "env": {
+    "browser": true
+  }
 }

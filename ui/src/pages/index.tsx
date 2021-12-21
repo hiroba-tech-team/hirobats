@@ -1,0 +1,416 @@
+import React, { useState, useEffect, createRef } from "react";
+import Image from "next/image";
+import {
+  Container,
+  CssBaseline,
+  AppBar,
+  Toolbar,
+  Typography,
+  IconButton,
+  Menu,
+  Button,
+  Avatar,
+  Tooltip,
+  MenuItem,
+  List,
+  ListItem,
+  ListItemText,
+  ListItemAvatar,
+  Divider,
+  Drawer,
+  Box,
+  Dialog,
+  DialogTitle,
+  TextField,
+} from "@mui/material";
+import MenuIcon from "@mui/icons-material/Menu";
+import AddIcon from "@mui/icons-material/Add";
+import RemoveIcon from "@mui/icons-material/Remove";
+
+// 変数channel の型
+interface Channel {
+  id: number;
+  name: string;
+  desc: string;
+}
+// 変数dialog の型
+interface Dialogue {
+  id: number;
+  message: string;
+  time: string;
+  user: string;
+  avatar: string;
+}
+// 変数user の型（未定）
+interface User {
+  id: number;
+  name: string;
+  avatar: string;
+  channel: string[];
+  login: boolean;
+}
+
+export default function Main() {
+  // チャンネルの初期設定
+  const [channels, setChannels] = useState<Channel[]>([
+    { id: 0, name: "#サンプル", desc: "チャンネルの説明です" },
+    { id: 1, name: "打合せ", desc: "いつ始めましょうか" },
+    { id: 2, name: "定例", desc: "いつもの時間で" },
+  ]);
+  // ユーザーの初期設定
+  const [users, setUsers] = useState<User>({
+    id: 0,
+    name: "",
+    avatar: "",
+    channel: [],
+    login: false,
+  });
+  // 会話の初期設定
+  const [dialog, setDialog] = useState<Dialogue[]>([
+    {
+      id: 0,
+      message: "こんにちは",
+      time: "15:10",
+      user: "ひろばくん",
+      avatar: "https://www.pinclipart.com/picdir/big/155-1559316_male-avatar-clipart.png",
+    },
+    {
+      id: 0,
+      message: "はじめまして",
+      time: "16:10",
+      user: "ひろばさん",
+      avatar: "https://www.pinclipart.com/picdir/big/155-1559325_female-avatar-clipart.png ",
+    },
+    {
+      id: 1,
+      message: "ありがとう",
+      time: "17:10",
+      user: "ひろばくん",
+      avatar: "https://www.pinclipart.com/picdir/big/155-1559316_male-avatar-clipart.png",
+    },
+    {
+      id: 1,
+      message: "どういたしまして",
+      time: "18:10",
+      user: "ひろばくん",
+      avatar: "https://www.pinclipart.com/picdir/big/155-1559316_male-avatar-clipart.png",
+    },
+    {
+      id: 2,
+      message: "こんにちは",
+      time: "19:10",
+      user: "ひろばくん",
+      avatar: "https://www.pinclipart.com/picdir/big/155-1559316_male-avatar-clipart.png",
+    },
+    {
+      id: 2,
+      message: "さようなら",
+      time: "20:10",
+      user: "ひろばさん",
+      avatar: "https://www.pinclipart.com/picdir/big/155-1559325_female-avatar-clipart.png",
+    },
+  ]);
+  // テスト用にユーザーデータを定義
+  let testUser = [
+    {
+      id: 0,
+      name: "ひろばくん",
+      avatar: "https://www.pinclipart.com/picdir/big/155-1559316_male-avatar-clipart.png",
+      channel: ["#サンプル", "打合せ", "定例"],
+      login: true,
+    },
+    {
+      id: 1,
+      name: "ひろばさん",
+      avatar: "https://www.pinclipart.com/picdir/big/155-1559325_female-avatar-clipart.png",
+      channel: ["#サンプル", "打合せ", "定例"],
+      login: true,
+    },
+  ];
+
+  const [current, setCurrent] = useState<number>(0); // 現在の選択されているチャンネル
+  const [value, setValue] = useState<string>(""); // テキストボックスに入力されている値
+  const [anchorElNav, setAnchorElNav] = useState<null | HTMLElement>(null); // ユーザーメニュー表示非表示
+  const [anchorElUser, setAnchorElUser] = useState<null | HTMLElement>(null); // ハンバーガーメニュー表示非表示
+  const [open, setOpen] = useState<boolean>(false); // モーダルのオープン/クローズ
+  const ref = createRef<HTMLDivElement>(); // メッセージエリアを参照するためのマーカー
+
+  // サイドメニューの幅
+  const drawerWidth = 240;
+  // AppBarの設定
+  const pages = ["チャンネル", channels[current].name];
+  const settings = ["アカウント", "チャンネル", "ログアウト"];
+  // チャンネル変更
+  const handleOnClick = (e: number) => {
+    setCurrent(e);
+  };
+  // メッセージ書き込み
+  const handleSubmit = () => {
+    dialog.push({ id: current, message: value, time: "21:20", user: users.name, avatar: users.avatar });
+    setDialog(dialog);
+    setValue("");
+  };
+  // テスト用にユーザー変更
+  const changeUser = (e: number) => {
+    setUsers(testUser[e]);
+  };
+  // ハンバーガーメニューをオープン
+  const handleOpenUserMenu = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorElUser(event.currentTarget);
+  };
+  // ハンバーガーメニューをクローズ
+  const handleCloseUserMenu = () => {
+    setAnchorElUser(null);
+  };
+  // ユーザーメニューをオープン
+  const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorElNav(event.currentTarget);
+  };
+  // ユーザーメニューをクローズ
+  const handleCloseNavMenu = () => {
+    setAnchorElNav(null);
+  };
+  // モーダルをオープン
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
+  // モーダル外をクリックでクローズ
+  const handleClose = () => {
+    setOpen(false);
+  };
+  const handleListItemClick = () => {
+    console.log("クリックされました");
+  };
+
+  // 書き込み終了時に最新メッセージにフォーカス
+  useEffect(() => {
+    ref!.current!.scrollIntoView({
+      // ! 表記はundefinedやnullにはならないということ
+      behavior: "smooth",
+      block: "end",
+    });
+  }, [ref]);
+
+  // 読み込み時にユーザーを 変数users にセット
+  useEffect(() => {
+    setUsers(testUser[0]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // ブレークポイント　xs: 0px sm: 600px md: 900px lg: 1200px xl: 1536px
+  return (
+    <>
+      {/* 大枠はContainerで包む、sxはcssにアクセスする maxのブレークポイントを設定 */}
+      <Container sx={{ display: "flex" }} maxWidth="xl">
+        {/* ブラウザーの差異を平均化 */}
+        <CssBaseline />
+        {/* AppBarが幅いっぱいになるzIndex*/}
+        <AppBar position="fixed" sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}>
+          {/* disableGutters 左右の端の余白なし */}
+          <Toolbar disableGutters>
+            {/* varient 文字の大きさ  noWrap 文字の折り返しなし sx テーマへのアクセス mr マージンライト */}
+            <Typography variant="h3" noWrap component="div" sx={{ mr: 2, display: { xs: "none", md: "flex" } }}>
+              hirobats
+            </Typography>
+            {/* md未満の幅になった場合に表示される */}
+            <Box sx={{ flexGrow: 1, display: { xs: "flex", md: "none" } }}>
+              <IconButton
+                size="large"
+                aria-label="account of current user"
+                aria-controls="menu-appbar"
+                aria-haspopup="true"
+                onClick={handleOpenNavMenu}
+                color="inherit"
+              >
+                <MenuIcon />
+              </IconButton>
+              <Menu
+                id="menu-appbar"
+                anchorEl={anchorElNav}
+                anchorOrigin={{
+                  vertical: "bottom",
+                  horizontal: "left",
+                }}
+                keepMounted
+                transformOrigin={{
+                  vertical: "top",
+                  horizontal: "left",
+                }}
+                open={Boolean(anchorElNav)}
+                onClose={handleCloseNavMenu}
+                sx={{
+                  display: { xs: "block", md: "none" },
+                }}
+              >
+                {pages.map((page) => (
+                  <MenuItem key={page} onClick={handleCloseNavMenu}>
+                    <Typography textAlign="center">{page}</Typography>
+                  </MenuItem>
+                ))}
+              </Menu>
+            </Box>
+            <Typography variant="h6" noWrap component="div" sx={{ flexGrow: 1, display: { xs: "flex", md: "none" } }}>
+              hirobats
+            </Typography>
+            <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}>
+              {pages.map((page) => (
+                // my = マージントップ&マージンボトム
+                <Button key={page} onClick={handleCloseNavMenu} sx={{ my: 2, color: "white", display: "block" }}>
+                  {page}
+                </Button>
+              ))}
+            </Box>
+            <Box sx={{ flexGrow: 0 }}>
+              {/* // Tooltip 吹き出し */}
+              <Tooltip title="セッティング">
+                {/* p パディング */}
+                <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
+                  <Avatar alt={users.name} src={users.avatar} />
+                </IconButton>
+              </Tooltip>
+              <Menu
+                sx={{ mt: "45px" }}
+                id="menu-appbar"
+                anchorEl={anchorElUser}
+                anchorOrigin={{
+                  vertical: "top",
+                  horizontal: "right",
+                }}
+                keepMounted
+                transformOrigin={{
+                  vertical: "top",
+                  horizontal: "right",
+                }}
+                open={Boolean(anchorElUser)}
+                onClose={handleCloseUserMenu}
+              >
+                {settings.map((setting) => (
+                  <MenuItem key={setting} onClick={handleCloseNavMenu}>
+                    <Typography textAlign="center">{setting}</Typography>
+                  </MenuItem>
+                ))}
+              </Menu>
+            </Box>
+          </Toolbar>
+        </AppBar>
+
+        {/* サイドメニュー */}
+        <Drawer
+          sx={{
+            width: drawerWidth,
+            "& .MuiDrawer-paper": {
+              width: drawerWidth,
+              boxSizing: "border-box", // パディング、境界、マージンを含ない
+            },
+          }}
+          variant="permanent" // 永続的に表示
+          anchor="left" // 左に表示
+        >
+          <Toolbar />
+          <List>
+            {/* button要素を追加 */}
+            <ListItem button onClick={handleClickOpen}>
+              ch追加
+            </ListItem>
+            {/* 分離ライン */}
+            <Divider />
+            {/* リスト内にchannelsを展開する */}
+            {channels.map((channel: Channel) => (
+              <ListItem button key={channel.id} onClick={() => handleOnClick(channel.id)}>
+                <ListItemText primary={channel.name} />
+              </ListItem>
+            ))}
+            {/* 分離ライン */}
+            <Divider />
+            {/* リスト内にusersを展開する（ユーザー変更テスト用） */}
+            {testUser.map((testUser: User) => (
+              <ListItem button key={testUser.id} onClick={() => changeUser(testUser.id)}>
+                <ListItemText primary={testUser.name} />
+              </ListItem>
+            ))}
+          </List>
+        </Drawer>
+
+        {/* メインエリア */}
+        <Container maxWidth="xl" ref={ref}>
+          {/* Appnav分の高さを下げる */}
+          <Toolbar />
+          {/* dialogの内容をListセットに展開する */}
+          {dialog.map((e: Dialogue, idx: number) => {
+            if (e.id === current) {
+              return (
+                <>
+                  {users.name === e.user ? (
+                    <List>
+                      <ListItem>
+                        <Image src={e.avatar} alt="" height={60} width={60} />
+                        <ListItemText primary={e.user} />
+                      </ListItem>
+                      <ListItemText primary={e.message} />
+                      <ListItemText primary={e.time} />
+                    </List>
+                  ) : (
+                    <List>
+                      <ListItem>
+                        <Image src={e.avatar} alt="" height={60} width={60} />
+                        <ListItemText primary={e.user} />
+                      </ListItem>
+                      <ListItemText primary={e.message} />
+                      <ListItemText primary={e.time} />
+                    </List>
+                  )}
+                </>
+              );
+            }
+          })}
+          <Box>
+            <TextField
+              id="filled-multiline-flexible"
+              label="Multiline"
+              multiline
+              maxRows={4}
+              value={value}
+              onChange={(e) => setValue(e.target.value)}
+              variant="filled"
+            />
+          </Box>
+          {value ? (
+            <Button onClick={handleSubmit}>送信する</Button>
+          ) : (
+            <Button onClick={handleSubmit} disabled>
+              送信する
+            </Button>
+          )}
+        </Container>
+
+        {/* モーダル */}
+        <Dialog onClose={handleClose} open={open}>
+          {/* モーダルタイトル */}
+          <DialogTitle>チャンネル一覧</DialogTitle>
+          {/* リストを展開 パディングトップ*/}
+          <List sx={{ pt: 0 }}>
+            {channels.map((channel: Channel) => (
+              <ListItem button key={channel.id} onClick={() => handleListItemClick}>
+                <ListItemAvatar>
+                  <Avatar>
+                    <RemoveIcon />
+                  </Avatar>
+                </ListItemAvatar>
+                <ListItemText primary={channel.name} />
+              </ListItem>
+            ))}
+            {/* モーダル内のチャンネル追加ボタン */}
+            <ListItem autoFocus button onClick={() => handleListItemClick}>
+              <ListItemAvatar>
+                <Avatar>
+                  <AddIcon />
+                </Avatar>
+              </ListItemAvatar>
+              <ListItemText primary="チャンネルを追加" />
+            </ListItem>
+          </List>
+        </Dialog>
+      </Container>
+    </>
+  );
+}
