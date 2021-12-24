@@ -4,12 +4,12 @@ import Channel from "../models/Channel"
 
 //Get a list of cities from your database
 export function getChannelList(
-    uid: number[],
+    channelId: number[],
 		setChannel: React.Dispatch<React.SetStateAction<Channel[]>>
 	) {
     const docsQuery = query(
       collection(db, "channels"),
-      where("id","in",uid)
+      where("id","in",channelId)
     );
 
     onSnapshot(docsQuery, (querySnapshot) => {

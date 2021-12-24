@@ -46,20 +46,20 @@ export default function Main() {
   };
 
   //ここでチャンネルに紐づくデータを取得する。
-  const getDialog = () => {
-    getMessageList().then(message => {
-      //データが取得できているか確認する時に使用する
-      // console.log(dialog);
-      setMessages(message);
-    }).catch(e => {
-      console.log("データがありませんでした。")
-    });
-  }
+  // const getDialog = () => {
+  //   getMessageList().then(message => {
+  //     //データが取得できているか確認する時に使用する
+  //     // console.log(dialog);
+  //     setMessages(message);
+  //   }).catch(e => {
+  //     console.log("データがありませんでした。")
+  //   });
+  // }
 
   useEffect(() => {
     //getChannel();
     getChannelList(users.channel,setChannels);
-    getDialog();
+    getMessageList(setMessages);
   },[]);
 
   useEffect(() => {
