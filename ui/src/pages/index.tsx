@@ -1,5 +1,4 @@
 import React, { useState, useEffect, createRef } from "react";
-import Image from "next/image";
 import {
   Container,
   CssBaseline,
@@ -24,136 +23,103 @@ import {
   TextField,
 } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
-import AddIcon from "@mui/icons-material/Add";
 import RemoveIcon from "@mui/icons-material/Remove";
 
-// 変数channel の型
-interface Channel {
-  id: number;
-  name: string;
-  desc: string;
-}
-// 変数dialog の型
-interface Dialogue {
-  id: number;
-  message: string;
-  time: string;
-  user: string;
-  avatar: string;
-}
-// 変数user の型（未定）
-interface User {
-  id: number;
-  name: string;
-  avatar: string;
-  channel: string[];
-  login: boolean;
-}
+//Providerのimport
+import { getChannelList } from "../provider/channel-provider";
+import { getMessageList } from "../provider/message-provider";
+
+//modelのimport
+import Channel from "../models/Channel";
+import Message from "../models/Message";
+import User from "../models/User";
 
 export default function Main() {
-  // チャンネルの初期設定
-  const [channels, setChannels] = useState<Channel[]>([
-    { id: 0, name: "#サンプル", desc: "チャンネルの説明です" },
-    { id: 1, name: "打合せ", desc: "いつ始めましょうか" },
-    { id: 2, name: "定例", desc: "いつもの時間で" },
-  ]);
-  // ユーザーの初期設定
+  const [channels, setChannels] = useState<Channel[]>([]);
   const [users, setUsers] = useState<User>({
     id: 0,
-    name: "",
-    avatar: "",
-    channel: [],
-    login: false,
+    name: "ひろばくん",
+    avatar: "https://www.pinclipart.com/picdir/big/155-1559316_male-avatar-clipart.png",
+    channel: [0, 1, 2, 3],
+    login: true,
   });
-  // 会話の初期設定
-  const [dialog, setDialog] = useState<Dialogue[]>([
-    {
-      id: 0,
-      message: "こんにちは",
-      time: "15:10",
-      user: "ひろばくん",
-      avatar: "https://www.pinclipart.com/picdir/big/155-1559316_male-avatar-clipart.png",
-    },
-    {
-      id: 0,
-      message: "はじめまして",
-      time: "16:10",
-      user: "ひろばさん",
-      avatar: "https://www.pinclipart.com/picdir/big/155-1559325_female-avatar-clipart.png ",
-    },
-    {
-      id: 1,
-      message: "ありがとう",
-      time: "17:10",
-      user: "ひろばくん",
-      avatar: "https://www.pinclipart.com/picdir/big/155-1559316_male-avatar-clipart.png",
-    },
-    {
-      id: 1,
-      message: "どういたしまして",
-      time: "18:10",
-      user: "ひろばくん",
-      avatar: "https://www.pinclipart.com/picdir/big/155-1559316_male-avatar-clipart.png",
-    },
-    {
-      id: 2,
-      message: "こんにちは",
-      time: "19:10",
-      user: "ひろばくん",
-      avatar: "https://www.pinclipart.com/picdir/big/155-1559316_male-avatar-clipart.png",
-    },
-    {
-      id: 2,
-      message: "さようなら",
-      time: "20:10",
-      user: "ひろばさん",
-      avatar: "https://www.pinclipart.com/picdir/big/155-1559325_female-avatar-clipart.png",
-    },
-  ]);
-  // テスト用にユーザーデータを定義
-  let testUser = [
+  const [message, setMessage] = useState<Message[]>([]);
+  const [current, setCurrent] = useState<number>(0); // 現在の選択されているチャンネル
+  const [value, setValue] = useState<string>(""); // テキストボックスに入力されている値
+  const ref = createRef<HTMLDivElement>(); // メッセージエリアを参照するためのマーカー
+
+  const [anchorElNav, setAnchorElNav] = useState<null | HTMLElement>(null); // ユーザーメニュー表示非表示
+  const [anchorElUser, setAnchorElUser] = useState<null | HTMLElement>(null); // ハンバーガーメニュー表示非表示
+  const [open, setOpen] = useState<boolean>(false); // モーダルのオープン/クローズ
+
+  let testUser: User[] = [
     {
       id: 0,
       name: "ひろばくん",
       avatar: "https://www.pinclipart.com/picdir/big/155-1559316_male-avatar-clipart.png",
-      channel: ["#サンプル", "打合せ", "定例"],
+      channel: [0, 1, 2, 3],
       login: true,
     },
     {
       id: 1,
       name: "ひろばさん",
       avatar: "https://www.pinclipart.com/picdir/big/155-1559325_female-avatar-clipart.png",
-      channel: ["#サンプル", "打合せ", "定例"],
+      channel: [0, 1, 2],
       login: true,
     },
   ];
-
-  const [current, setCurrent] = useState<number>(0); // 現在の選択されているチャンネル
-  const [value, setValue] = useState<string>(""); // テキストボックスに入力されている値
-  const [anchorElNav, setAnchorElNav] = useState<null | HTMLElement>(null); // ユーザーメニュー表示非表示
-  const [anchorElUser, setAnchorElUser] = useState<null | HTMLElement>(null); // ハンバーガーメニュー表示非表示
-  const [open, setOpen] = useState<boolean>(false); // モーダルのオープン/クローズ
-  const ref = createRef<HTMLDivElement>(); // メッセージエリアを参照するためのマーカー
-
   // サイドメニューの幅
-  const drawerWidth = 240;
+  const drawerWidth: number = 240;
   // AppBarの設定
-  const pages = ["チャンネル", channels[current].name];
-  const settings = ["アカウント", "チャンネル", "ログアウト"];
-  // チャンネル変更
-  const handleOnClick = (e: number) => {
-    setCurrent(e);
-  };
-  // メッセージ書き込み
-  const handleSubmit = () => {
-    dialog.push({ id: current, message: value, time: "21:20", user: users.name, avatar: users.avatar });
-    setDialog(dialog);
-    setValue("");
-  };
+  const pages: string[] = ["チャンネル", "調整中"];
+  const settings: string[] = ["アカウント", "チャンネル", "ログアウト"];
+
   // テスト用にユーザー変更
   const changeUser = (e: number) => {
     setUsers(testUser[e]);
   };
+  const handleOnClick = (e: number) => {
+    setCurrent(e);
+  };
+  const handleSubmit = () => {
+    message.push({
+      channelId: current,
+      text: value,
+      time: new Date().toString(),
+      userId: users.id,
+    });
+    setMessage(message);
+    setValue("");
+  };
+  //ここでチャンネルに紐づくデータを取得する。
+  const getMessage = () => {
+    getMessageList()
+      .then((message) => {
+        //データが取得できているか確認する時に使用する
+        // console.log(dialog);
+        setMessage(message);
+      })
+      .catch((e) => {
+        console.log("データがありませんでした。");
+      });
+  };
+
+  // 読み込み時にtestUser＆firebaseから取得する
+  useEffect(() => {
+    //getChannel();
+    getChannelList(users.channel, setChannels);
+    getMessage();
+    setUsers(testUser[0]);
+  }, []);
+
+  useEffect(() => {
+    ref!.current!.scrollIntoView({
+      // ! 表記はundefinedやnullにはならないということ
+      behavior: "smooth",
+      block: "end",
+    });
+  }, [ref]);
+
   // ハンバーガーメニューをオープン
   const handleOpenUserMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorElUser(event.currentTarget);
@@ -181,21 +147,6 @@ export default function Main() {
   const handleListItemClick = () => {
     console.log("クリックされました");
   };
-
-  // 書き込み終了時に最新メッセージにフォーカス
-  useEffect(() => {
-    ref!.current!.scrollIntoView({
-      // ! 表記はundefinedやnullにはならないということ
-      behavior: "smooth",
-      block: "end",
-    });
-  }, [ref]);
-
-  // 読み込み時にユーザーを 変数users にセット
-  useEffect(() => {
-    setUsers(testUser[0]);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
 
   // ブレークポイント　xs: 0px sm: 600px md: 900px lg: 1200px xl: 1536px
   return (
@@ -253,9 +204,9 @@ export default function Main() {
               hirobats
             </Typography>
             <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}>
-              {pages.map((page) => (
+              {pages.map((page, index) => (
                 // my = マージントップ&マージンボトム
-                <Button key={page} onClick={handleCloseNavMenu} sx={{ my: 2, color: "white", display: "block" }}>
+                <Button key={index} onClick={handleCloseNavMenu} sx={{ my: 2, color: "white", display: "block" }}>
                   {page}
                 </Button>
               ))}
@@ -284,8 +235,8 @@ export default function Main() {
                 open={Boolean(anchorElUser)}
                 onClose={handleCloseUserMenu}
               >
-                {settings.map((setting) => (
-                  <MenuItem key={setting} onClick={handleCloseNavMenu}>
+                {settings.map((setting, index) => (
+                  <MenuItem key={index} onClick={handleCloseNavMenu}>
                     <Typography textAlign="center">{setting}</Typography>
                   </MenuItem>
                 ))}
@@ -315,9 +266,9 @@ export default function Main() {
             {/* 分離ライン */}
             <Divider />
             {/* リスト内にchannelsを展開する */}
-            {channels.map((channel: Channel) => (
-              <ListItem button key={channel.id} onClick={() => handleOnClick(channel.id)}>
-                <ListItemText primary={channel.name} />
+            {users.channel.map((e: number) => (
+              <ListItem button key={e} onClick={() => handleOnClick(e)}>
+                <ListItemText primary={e} />
               </ListItem>
             ))}
             {/* 分離ライン */}
@@ -335,31 +286,26 @@ export default function Main() {
         <Container maxWidth="xl" ref={ref}>
           {/* Appnav分の高さを下げる */}
           <Toolbar />
-          {/* dialogの内容をListセットに展開する */}
-          {dialog.map((e: Dialogue, idx: number) => {
-            if (e.id === current) {
+          {/* messageの内容をListセットに展開する */}
+          {message.map((e: Message, index) => {
+            if (e.channelId === current) {
               return (
-                <>
-                  {users.name === e.user ? (
+                <div key={index}>
+                  {users.id === e.userId ? (
                     <List>
-                      <ListItem>
-                        <Image src={e.avatar} alt="" height={60} width={60} />
-                        <ListItemText primary={e.user} />
-                      </ListItem>
-                      <ListItemText primary={e.message} />
+                      <Avatar alt={users.name} src={users.avatar} />
+                      <ListItemText primary={e.userId} />
+                      <ListItemText primary={e.text} />
                       <ListItemText primary={e.time} />
                     </List>
                   ) : (
                     <List>
-                      <ListItem>
-                        <Image src={e.avatar} alt="" height={60} width={60} />
-                        <ListItemText primary={e.user} />
-                      </ListItem>
-                      <ListItemText primary={e.message} />
+                      <ListItemText primary={e.userId} />
+                      <ListItemText primary={e.text} />
                       <ListItemText primary={e.time} />
                     </List>
                   )}
-                </>
+                </div>
               );
             }
           })}
@@ -388,27 +334,18 @@ export default function Main() {
           {/* モーダルタイトル */}
           <DialogTitle>チャンネル一覧</DialogTitle>
           {/* リストを展開 パディングトップ*/}
-          <List sx={{ pt: 0 }}>
-            {channels.map((channel: Channel) => (
-              <ListItem button key={channel.id} onClick={() => handleListItemClick}>
+          {users.channel.map((e: number, index) => (
+            <List key={index}>
+              <ListItem button onClick={() => handleListItemClick}>
                 <ListItemAvatar>
                   <Avatar>
                     <RemoveIcon />
                   </Avatar>
                 </ListItemAvatar>
-                <ListItemText primary={channel.name} />
+                <ListItemText primary={e} />
               </ListItem>
-            ))}
-            {/* モーダル内のチャンネル追加ボタン */}
-            <ListItem autoFocus button onClick={() => handleListItemClick}>
-              <ListItemAvatar>
-                <Avatar>
-                  <AddIcon />
-                </Avatar>
-              </ListItemAvatar>
-              <ListItemText primary="チャンネルを追加" />
-            </ListItem>
-          </List>
+            </List>
+          ))}
         </Dialog>
       </Container>
     </>
