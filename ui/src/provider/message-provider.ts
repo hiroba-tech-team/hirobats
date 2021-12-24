@@ -1,13 +1,12 @@
 import { db } from "../lib/firebase";
 import {collection,addDoc, query, orderBy, getDocs, Timestamp, onSnapshot } from 'firebase/firestore'
 import Message from "../models/Message"
-import {formatDate} from "../util/date-util";
+import {formatDateTime} from "../util/date-util";
 
 
 
 /**
  * Read: メッセージのリストを取得する
- * @returns channelArr
  */
 export async function getMessageList(
 	setMessage: React.Dispatch<React.SetStateAction<Message[]>>
@@ -44,7 +43,7 @@ export async function getMessageList(
 			 */
 			newMessage.channelId = message.data().channel_id;
 			newMessage.text = message.data().text;
-			newMessage.time = formatDate(message.data().time.toDate()).toString();
+			newMessage.time = formatDateTime(message.data().time.toDate()).toString();
 			newMessage.userId = message.data().user_id;
 			/**
 			 * セットした値を配列に格納する

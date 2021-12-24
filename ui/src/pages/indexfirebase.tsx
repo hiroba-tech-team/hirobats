@@ -10,7 +10,7 @@ import Channel from "../models/Channel";
 import Message from "../models/Message";
 import User from "../models/User";
 
-import {formatDate} from "../util/date-util"
+import {formatDateTime} from "../util/date-util"
 
 export default function Main() {
   const [channels, setChannels] = useState<Channel[]>([]);
@@ -36,25 +36,11 @@ export default function Main() {
     const message = {
       channelId: current,
       text: value,
-      time: formatDate(new Date()),
+      time: formatDateTime(new Date()),
       userId: users.id
     } as Message;
     addMessageList(message);
-    messages.push(message);
-    setMessages(messages);
-    setValue("");
   };
-
-  //ここでチャンネルに紐づくデータを取得する。
-  // const getDialog = () => {
-  //   getMessageList().then(message => {
-  //     //データが取得できているか確認する時に使用する
-  //     // console.log(dialog);
-  //     setMessages(message);
-  //   }).catch(e => {
-  //     console.log("データがありませんでした。")
-  //   });
-  // }
 
   useEffect(() => {
     //getChannel();
