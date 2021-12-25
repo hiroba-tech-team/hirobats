@@ -3,7 +3,7 @@ import Image from "next/image";
 
 //Providerのimport
 import { getChannelList } from "../provider/channel-provider";
-import { getMessageList,addMessage } from "../provider/message-provider";
+import { getMessageList,addMessage,deleteMessage } from "../provider/message-provider";
 
 //modelのimport
 import Channel from "../models/Channel";
@@ -230,6 +230,11 @@ export default function Main() {
                               >
                                 {e.text}
                               </div>
+                              <button
+                              onClick={() => deleteMessage(e.documentId)}
+                              >
+                                削除
+                              </button>
                               <div
                                 style={{
                                   marginLeft: "10px",

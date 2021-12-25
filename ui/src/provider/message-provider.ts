@@ -1,5 +1,5 @@
 import { db } from "../lib/firebase";
-import {collection,addDoc, query, orderBy, getDocs, Timestamp, onSnapshot } from 'firebase/firestore'
+import {collection,addDoc,deleteDoc, query, orderBy, getDocs, Timestamp, onSnapshot, getDoc, doc } from 'firebase/firestore'
 import Message from "../models/Message"
 import {formatDateTime} from "../util/date-util";
 
@@ -46,6 +46,7 @@ export async function getMessageList(
 			 *
 			 * つまり channel.data().desc など descではなく全く違う言葉(appleなど)にしてもコード上ではエラーになることはない
 			 */
+			newMessage.documentId = message.id;
 			newMessage.channelId = message.data().channel_id;
 			newMessage.text = message.data().text;
 			newMessage.time = formatDateTime(message.data().time.toDate()).toString();
@@ -66,7 +67,7 @@ export async function getMessageList(
  * @param message ユーザが入力したテキスト
  */
 export async function addMessage(message: Message) {
-	const docRef = await addDoc(collection(db, "message"), {
+	await addDoc(collection(db, "message"), {
 		channel_id: message.channelId,
 		text: message.text,
 		user_id: message.userId,
@@ -78,7 +79,7 @@ export async function addMessage(message: Message) {
 /**
  * Delete: メッセージを削除する
  */
-export async function deleteMessage(){
-
+export async function deleteMessage(documentId: string){
+	await deleteDoc(doc(db, "message", documentId));
 }
 
