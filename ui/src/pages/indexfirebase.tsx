@@ -3,7 +3,7 @@ import Image from "next/image";
 
 //Providerのimport
 import { getChannelList } from "../provider/channel-provider";
-import { getMessageList,addMessageList } from "../provider/message-provider";
+import { getMessageList,addMessage } from "../provider/message-provider";
 
 //modelのimport
 import Channel from "../models/Channel";
@@ -39,7 +39,7 @@ export default function Main() {
       time: formatDateTime(new Date()),
       userId: users.id
     } as Message;
-    addMessageList(message);
+    addMessage(message);
   };
 
   useEffect(() => {

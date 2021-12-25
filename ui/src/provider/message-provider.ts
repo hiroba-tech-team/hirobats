@@ -3,7 +3,12 @@ import {collection,addDoc, query, orderBy, getDocs, Timestamp, onSnapshot } from
 import Message from "../models/Message"
 import {formatDateTime} from "../util/date-util";
 
+/**
+ * Read: メッセージを取得
+ */
+export async function getMessage(){
 
+}
 
 /**
  * Read: メッセージのリストを取得する
@@ -60,7 +65,7 @@ export async function getMessageList(
  * Create: メッセージを登録する
  * @param message ユーザが入力したテキスト
  */
-export async function addMessageList(message: Message) {
+export async function addMessage(message: Message) {
 	const docRef = await addDoc(collection(db, "message"), {
 		channel_id: message.channelId,
 		text: message.text,
@@ -69,3 +74,11 @@ export async function addMessageList(message: Message) {
 	});
 	//console.log("Document written with ID: ", docRef.id);
 }
+
+/**
+ * Delete: メッセージを削除する
+ */
+export async function deleteMessage(){
+
+}
+
