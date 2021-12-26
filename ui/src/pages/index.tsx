@@ -27,12 +27,13 @@ import RemoveIcon from "@mui/icons-material/Remove";
 
 //Providerのimport
 import { getChannelList } from "../provider/channel-provider";
-import { getMessageList } from "../provider/message-provider";
+import { getMessageList, addMessage } from "../provider/message-provider";
 
 //modelのimport
 import Channel from "../models/Channel";
 import Message from "../models/Message";
 import User from "../models/User";
+import { formatDateTime } from "../util/date-util";
 
 export default function Main() {
   const [channels, setChannels] = useState<Channel[]>([]);
@@ -43,7 +44,7 @@ export default function Main() {
     channel: [0, 1, 2, 3],
     login: true,
   });
-  const [message, setMessage] = useState<Message[]>([]);
+  const [messages, setMessages] = useState<Message[]>([]);
   const [current, setCurrent] = useState<number>(0); // 現在の選択されているチャンネル
   const [value, setValue] = useState<string>(""); // テキストボックスに入力されている値
   const ref = createRef<HTMLDivElement>(); // メッセージエリアを参照するためのマーカー
@@ -82,33 +83,20 @@ export default function Main() {
     setCurrent(e);
   };
   const handleSubmit = () => {
-    message.push({
+    const message = {
       channelId: current,
       text: value,
-      time: new Date().toString(),
-      userId: users.id,
-    });
-    setMessage(message);
-    setValue("");
-  };
-  //ここでチャンネルに紐づくデータを取得する。
-  const getMessage = () => {
-    getMessageList()
-      .then((message) => {
-        //データが取得できているか確認する時に使用する
-        // console.log(dialog);
-        setMessage(message);
-      })
-      .catch((e) => {
-        console.log("データがありませんでした。");
-      });
+      time: formatDateTime(new Date()),
+      userId: users.id
+    } as Message;
+    addMessage(message);
   };
 
   // 読み込み時にtestUser＆firebaseから取得する
   useEffect(() => {
     //getChannel();
     getChannelList(users.channel, setChannels);
-    getMessage();
+    getMessageList(setMessages);
     setUsers(testUser[0]);
   }, []);
 
@@ -287,7 +275,7 @@ export default function Main() {
           {/* Appnav分の高さを下げる */}
           <Toolbar />
           {/* messageの内容をListセットに展開する */}
-          {message.map((e: Message, index) => {
+          {messages.map((e: Message, index) => {
             if (e.channelId === current) {
               return (
                 <div key={index}>
