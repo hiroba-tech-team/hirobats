@@ -3,12 +3,14 @@ import Image from "next/image";
 
 //Providerのimport
 import { getChannelList } from "../provider/channel-provider";
-import { getMessageList } from "../provider/message-provider";
+import { getMessageList,addMessage,deleteMessage } from "../provider/message-provider";
 
 //modelのimport
 import Channel from "../models/Channel";
 import Message from "../models/Message";
 import User from "../models/User";
+
+import {formatDateTime} from "../util/date-util"
 
 export default function Main() {
   const [channels, setChannels] = useState<Channel[]>([]);
@@ -20,7 +22,7 @@ export default function Main() {
     login: true,
   });
 
-  const [message, setMessage] = useState<Message[]>([]);
+  const [messages, setMessages] = useState<Message[]>([]);
   const [current, setCurrent] = useState<number>(0); // 現在の選択されているチャンネル
   const [value, setValue] = useState<string>(""); // テキストボックスに入力されている値
   const ref = createRef<HTMLDivElement>(); // メッセージエリアを参照するためのマーカー
@@ -31,31 +33,19 @@ export default function Main() {
   };
 
   const handleSubmit = () => {
-    message.push({
+    const message = {
       channelId: current,
       text: value,
-      time: (new Date()).toString(),
+      time: formatDateTime(new Date()),
       userId: users.id
-    });
-    setMessage(message);
-    setValue("");
+    } as Message;
+    addMessage(message);
   };
-
-  //ここでチャンネルに紐づくデータを取得する。
-  const getDialog = () => {
-    getMessageList().then(message => {
-      //データが取得できているか確認する時に使用する
-      // console.log(dialog);
-      setMessage(message);
-    }).catch(e => {
-      console.log("データがありませんでした。")
-    });
-  }
 
   useEffect(() => {
     //getChannel();
     getChannelList(users.channel,setChannels);
-    getDialog();
+    getMessageList(setMessages);
   },[]);
 
   useEffect(() => {
@@ -192,7 +182,7 @@ export default function Main() {
             }}
           >
             <div ref={ref} style={{ paddingBottom: "90px" }}>
-              {message.map((e, idx) => {
+              {messages.map((e, idx) => {
                 if (e.channelId === current) {
                   return (
                     <div key={idx}>
@@ -240,6 +230,11 @@ export default function Main() {
                               >
                                 {e.text}
                               </div>
+                              <button
+                              onClick={() => deleteMessage(e.documentId)}
+                              >
+                                削除
+                              </button>
                               <div
                                 style={{
                                   marginLeft: "10px",
@@ -314,7 +309,7 @@ export default function Main() {
                   );
                 }
               })}
-              {message.length === 0 && <div style={{ textAlign: "center", marginTop: 20 }}>メッセージがありません</div>}
+              {messages.length === 0 && <div style={{ textAlign: "center", marginTop: 20 }}>メッセージがありません</div>}
             </div>
           </div>
 
