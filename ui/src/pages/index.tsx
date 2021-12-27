@@ -21,9 +21,11 @@ import {
   Dialog,
   DialogTitle,
   TextField,
+  Grid,
 } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 import RemoveIcon from "@mui/icons-material/Remove";
+import { css } from "@emotion/react";
 
 //Providerのimport
 import { getChannelList } from "../provider/channel-provider";
@@ -90,6 +92,7 @@ export default function Main() {
       userId: users.id,
     } as Message;
     addMessage(message);
+    setValue("");
   };
 
   // 読み込み時にtestUser＆firebaseから取得する
@@ -135,6 +138,28 @@ export default function Main() {
   const handleListItemClick = () => {
     console.log("クリックされました");
   };
+  // Emotionでスタイル設定
+  const balloon = css`
+    position: relative;
+    display: inline-block;
+    margin: 1.5em 0 1.5em 15px;
+    padding: 7px 10px;
+    min-width: 120px;
+    max-width: 100%;
+    color: black;
+    font-size: 16px;
+    background: #f3e5f5;
+    border-radius: 7px;
+    &:before {
+      content: "";
+      position: absolute;
+      top: 50%;
+      left: -30px;
+      margin-top: -15px;
+      border: 15px solid transparent;
+      border-right: 15px solid #f3e5f5;
+    }
+  `;
 
   // ブレークポイント　xs: 0px～ sm: 600px～ md: 900px～ lg: 1200px～ xl: 1536px～
   return (
@@ -262,34 +287,40 @@ export default function Main() {
         </Drawer>
 
         {/* メインエリア */}
-        <Container maxWidth="xl" ref={ref}>
+        <Container disableGutters maxWidth="xl" ref={ref}>
           {/* Appnav分の高さを下げる */}
           <Toolbar />
-          {/* messageの内容をListセットに展開する */}
-          {messages.map((e: Message, index) => {
-            if (e.channelId === current) {
-              return (
-                <div key={index}>
-                  {users.id === e.userId ? (
-                    <List>
-                      <Avatar alt={users.name} src={users.avatar} />
-                      <ListItemText primary={e.userId} />
-                      <ListItemText primary={e.text} />
-                      <ListItemText primary={e.time} />
-                      <button onClick={() => deleteMessage(e.documentId)}>削除</button>
-                    </List>
-                  ) : (
-                    <List>
-                      <ListItemText primary={e.userId} />
-                      <ListItemText primary={e.text} />
-                      <ListItemText primary={e.time} />
-                    </List>
-                  )}
-                </div>
-              );
-            }
-          })}
-          <Box>
+          {/* メッセージ表示エリア */}
+          <Box sx={{ height: "800px" }}>
+            {/* messageの内容をListセットに展開する */}
+            {messages.map((e: Message, index) => {
+              if (e.channelId === current) {
+                return (
+                  <div key={index}>
+                    {users.id === e.userId ? (
+                      <List>
+                        <Avatar alt={users.name} src={users.avatar} />
+                        <ListItemText primary={e.userId} />
+                        <ListItemText css={balloon} primary={e.text} />
+                        <ListItemText primary={e.time} />
+                        <Button variant="contained" onClick={() => deleteMessage(e.documentId)}>
+                          削除
+                        </Button>
+                      </List>
+                    ) : (
+                      <List sx={{ mt: 2 }}>
+                        <ListItemText primary={e.userId} />
+                        <ListItemText primary={e.text} />
+                        <ListItemText primary={e.time} />
+                      </List>
+                    )}
+                  </div>
+                );
+              }
+            })}
+          </Box>
+          <Divider />
+          <Box sx={{ height: "20%" }}>
             <TextField
               id="filled-multiline-flexible"
               label="Multiline"
@@ -299,14 +330,14 @@ export default function Main() {
               onChange={(e) => setValue(e.target.value)}
               variant="filled"
             />
+            {value ? (
+              <Button onClick={handleSubmit}>送信する</Button>
+            ) : (
+              <Button onClick={handleSubmit} disabled>
+                送信する
+              </Button>
+            )}
           </Box>
-          {value ? (
-            <Button onClick={handleSubmit}>送信する</Button>
-          ) : (
-            <Button onClick={handleSubmit} disabled>
-              送信する
-            </Button>
-          )}
         </Container>
 
         {/* モーダル */}
