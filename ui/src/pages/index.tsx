@@ -27,12 +27,13 @@ import RemoveIcon from "@mui/icons-material/Remove";
 
 //Providerのimport
 import { getChannelList } from "../provider/channel-provider";
-import { getMessageList, addMessage } from "../provider/message-provider";
+import { getMessageList, addMessage, deleteMessage } from "../provider/message-provider";
 
 //modelのimport
 import Channel from "../models/Channel";
 import Message from "../models/Message";
 import User from "../models/User";
+
 import { formatDateTime } from "../util/date-util";
 
 export default function Main() {
@@ -285,6 +286,7 @@ export default function Main() {
                       <ListItemText primary={e.userId} />
                       <ListItemText primary={e.text} />
                       <ListItemText primary={e.time} />
+                      <button onClick={() => deleteMessage(e.documentId)}>削除</button>
                     </List>
                   ) : (
                     <List>
