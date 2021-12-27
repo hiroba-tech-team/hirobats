@@ -50,7 +50,7 @@ export default function Main() {
   const [value, setValue] = useState<string>(""); // テキストボックスに入力されている値
   const ref = createRef<HTMLDivElement>(); // メッセージエリアを参照するためのマーカー
 
-  const [anchorElSide, setAnchorElSide] = useState<null | HTMLElement>(null); // サイドメニュー表示非表示
+  const [anchorElSide, setAnchorElSide] = useState<boolean | undefined>(false); // サイドメニュー表示非表示
   const [anchorElUser, setAnchorElUser] = useState<null | HTMLElement>(null); // ユーザーメニュー表示非表示
   const [open, setOpen] = useState<boolean>(false); // モーダルのオープン/クローズ
 
@@ -118,11 +118,11 @@ export default function Main() {
   };
   // サイドメニューをオープン
   const handleOpenSideMenu = (event: React.MouseEvent<HTMLElement>) => {
-    setAnchorElSide(event.currentTarget);
+    setAnchorElSide(!anchorElSide);
   };
   // サイドメニューをクローズ
   const handleCloseSideMenu = () => {
-    setAnchorElSide(null);
+    setAnchorElSide(false);
   };
   // モーダルをオープン
   const handleClickOpen = () => {
@@ -228,8 +228,9 @@ export default function Main() {
           </List>
         </Drawer>
 
-        {/* サイドメニュー md未満の場合に表示*/}
+        {/* サイドメニュー md未満の場合はハンバーガーメニューをクリックして表示*/}
         <Drawer
+          open={anchorElSide}
           onClose={handleCloseSideMenu}
           sx={{
             display: { xs: "flex", md: "none" },
