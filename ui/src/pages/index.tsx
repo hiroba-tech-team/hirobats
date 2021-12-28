@@ -20,7 +20,6 @@ import {
   Box,
   Dialog,
   DialogTitle,
-  TextareaAutosize,
   TextField,
 } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
@@ -162,10 +161,18 @@ export default function Main() {
     }
   `;
   const messagearea = css`
-    height: calc(80vh);
+    height: calc(83vh);
     margin-left: 20px;
     scroll-behavior: auto;
     overflow: auto;
+  `;
+  const messagecontainer = css`
+    display: flex;
+    align-items: center;
+    margin: 1rem;
+  `;
+  const message = css`
+    display: inline-block;
   `;
 
   // ブレークポイント　xs: 0px～ sm: 600px～ md: 900px～ lg: 1200px～ xl: 1536px～
@@ -297,7 +304,6 @@ export default function Main() {
         {/* メインエリア */}
         <Container maxWidth={false} disableGutters>
           {/* Appnav分の高さを下げる */}
-          <Toolbar />
           {/* メッセージ表示エリア */}
           <Box css={messagearea}>
             {/* cssと併記するとrefが効かないため、Boxタグを重ねる */}
@@ -308,11 +314,11 @@ export default function Main() {
                   return (
                     <div key={index}>
                       {users.id === e.userId ? (
-                        <List>
-                          <Avatar alt={users.name} src={users.avatar} />
-                          <ListItemText primary={e.userId} />
+                        <List css={messagecontainer}>
+                          <Avatar css={message} alt={users.name} src={users.avatar} />
+                          <ListItemText css={message} primary={e.userId} />
                           <ListItemText css={balloon} primary={e.text} />
-                          <ListItemText primary={e.time} />
+                          <ListItemText css={message} primary={e.time} />
                           <Button variant="contained" onClick={() => deleteMessage(e.documentId)}>
                             削除
                           </Button>
