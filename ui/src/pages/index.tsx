@@ -20,8 +20,8 @@ import {
   Box,
   Dialog,
   DialogTitle,
+  TextareaAutosize,
   TextField,
-  Grid,
 } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 import RemoveIcon from "@mui/icons-material/Remove";
@@ -37,6 +37,7 @@ import Message from "../models/Message";
 import User from "../models/User";
 
 import { formatDateTime } from "../util/date-util";
+import { height } from "@mui/system";
 
 export default function Main() {
   const [channels, setChannels] = useState<Channel[]>([]);
@@ -120,7 +121,7 @@ export default function Main() {
     setAnchorElUser(null);
   };
   // サイドメニューをオープン
-  const handleOpenSideMenu = (event: React.MouseEvent<HTMLElement>) => {
+  const handleOpenSideMenu = () => {
     setAnchorElSide(!anchorElSide);
   };
   // サイドメニューをクローズ
@@ -160,18 +161,25 @@ export default function Main() {
       border-right: 15px solid #f3e5f5;
     }
   `;
+  const messagearea = css`
+    height: calc(80vh);
+    margin-left: 20px;
+    scroll-behavior: auto;
+    overflow: auto;
+  `;
 
   // ブレークポイント　xs: 0px～ sm: 600px～ md: 900px～ lg: 1200px～ xl: 1536px～
   return (
     <>
-      {/* 大枠はContainerで包む、sxはcssにアクセスする maxのブレークポイントを設定 */}
-      <Container sx={{ display: "flex" }} maxWidth="xl">
+      {/* 大枠はContainerで包む、sxはcssにアクセスする maxのブレークポイントを設定
+      disableGutters maxWidth={false}でパディング削除 */}
+      <Container disableGutters maxWidth={false} sx={{ display: "flex" }}>
         {/* ブラウザーの差異を平均化 */}
         <CssBaseline />
         {/* AppBarがDrawerよりzIndex + 1 */}
         <AppBar position="fixed" sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}>
           {/* disableGutters 左右の端の余白なし */}
-          <Toolbar disableGutters>
+          <Toolbar>
             {/* varient 文字の大きさ  noWrap 文字の折り返しなし sx テーマへのアクセス mr マージンライト */}
             <Typography variant="h3" noWrap sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}>
               HIROBATS
@@ -287,57 +295,58 @@ export default function Main() {
         </Drawer>
 
         {/* メインエリア */}
-        <Container disableGutters maxWidth="xl" ref={ref}>
+        <Container maxWidth={false} disableGutters>
           {/* Appnav分の高さを下げる */}
           <Toolbar />
           {/* メッセージ表示エリア */}
-          <Box sx={{ height: "800px" }}>
-            {/* messageの内容をListセットに展開する */}
-            {messages.map((e: Message, index) => {
-              if (e.channelId === current) {
-                return (
-                  <div key={index}>
-                    {users.id === e.userId ? (
-                      <List>
-                        <Avatar alt={users.name} src={users.avatar} />
-                        <ListItemText primary={e.userId} />
-                        <ListItemText css={balloon} primary={e.text} />
-                        <ListItemText primary={e.time} />
-                        <Button variant="contained" onClick={() => deleteMessage(e.documentId)}>
-                          削除
-                        </Button>
-                      </List>
-                    ) : (
-                      <List sx={{ mt: 2 }}>
-                        <ListItemText primary={e.userId} />
-                        <ListItemText primary={e.text} />
-                        <ListItemText primary={e.time} />
-                      </List>
-                    )}
-                  </div>
-                );
-              }
-            })}
+          <Box css={messagearea}>
+            {/* cssと併記するとrefが効かないため、Boxタグを重ねる */}
+            <Box ref={ref}>
+              {/* messageの内容をListセットに展開する */}
+              {messages.map((e: Message, index) => {
+                if (e.channelId === current) {
+                  return (
+                    <div key={index}>
+                      {users.id === e.userId ? (
+                        <List>
+                          <Avatar alt={users.name} src={users.avatar} />
+                          <ListItemText primary={e.userId} />
+                          <ListItemText css={balloon} primary={e.text} />
+                          <ListItemText primary={e.time} />
+                          <Button variant="contained" onClick={() => deleteMessage(e.documentId)}>
+                            削除
+                          </Button>
+                        </List>
+                      ) : (
+                        <List sx={{ mt: 2 }}>
+                          <ListItemText primary={e.userId} />
+                          <ListItemText primary={e.text} />
+                          <ListItemText primary={e.time} />
+                        </List>
+                      )}
+                    </div>
+                  );
+                }
+              })}
+            </Box>
           </Box>
-          <Divider />
-          <Box sx={{ height: "20%" }}>
-            <TextField
-              id="filled-multiline-flexible"
-              label="Multiline"
-              multiline
-              maxRows={4}
-              value={value}
-              onChange={(e) => setValue(e.target.value)}
-              variant="filled"
-            />
-            {value ? (
-              <Button onClick={handleSubmit}>送信する</Button>
-            ) : (
-              <Button onClick={handleSubmit} disabled>
-                送信する
-              </Button>
-            )}
-          </Box>
+          <TextField
+            fullWidth
+            minRows={2}
+            maxRows={2}
+            multiline
+            value={value}
+            onChange={(e) => setValue(e.target.value)}
+          />
+          {value ? (
+            <Button fullWidth variant="contained" onClick={handleSubmit}>
+              送信する
+            </Button>
+          ) : (
+            <Button fullWidth variant="contained" onClick={handleSubmit} disabled>
+              送信する
+            </Button>
+          )}
         </Container>
 
         {/* モーダル */}
