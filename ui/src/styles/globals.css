@@ -1,62 +1,7 @@
-html {
-  font-size: 80%; /* -> 10px; */
-}
-body {
-  padding: 0;
-  margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen, Ubuntu, Cantarell, Fira Sans, Droid Sans,
-    Helvetica Neue, sans-serif;
-}
-a {
-  color: inherit;
-  text-decoration: none;
-}
-* {
-  box-sizing: border-box;
-}
+
 /* 以下追記したもの */
-nav {
-  height: 7vh;
-}
-footer {
-  height: 3vh;
-}
-.row {
-  margin: 0;
-  padding: 0;
-}
-.side-area {
-  height: 90vh;
-}
-.message-area {
-  height: calc(80vh - 2rem);
-  border-bottom: 0.1rem solid #8e24aa;
-  scroll-behavior: auto;
-  overflow: auto;
-}
-.text-area {
-  height: 10vh;
-  scroll-behavior: auto;
-  overflow: auto;
-}
-.logo {
-  margin-left: 2rem;
-  position: absolute;
-  color: #fff;
-  display: inline-block;
-  font-size: 3rem;
-}
-.user-container {
-  display: flex;
-  align-items: center;
-}
-.user-avatar {
-  margin: 1rem;
-  display: inline-block;
-}
-.user-name {
-  display: inline-block;
-}
+
+
 .message-container {
   display: flex;
   align-items: center;
@@ -78,63 +23,5 @@ textarea.materialize-textarea {
 .input-field {
   margin-top: 2rem;
 }
-.btn {
-  border-radius: 0.3rem;
-  margin-top: 2em;
-  margin-bottom: 1em;
-}
-.white-text {
-  font-size: 1.5rem;
-}
-.black-text {
-  font-size: 1.2rem;
-}
-.modal-text {
-  font-size: 1.5rem;
-}
-.btn-floating {
-  margin-left: 2rem;
-}
-.channel-list {
-  margin-top: 2rem;
-  width: fit-content;
-}
-.channel-name {
-  padding: 0.5rem;
-  cursor: pointer;
-}
-.user-change {
-  margin-top: 1.5rem;
-}
-.copy-right {
-  font-size: 1rem;
-  color: white;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-.balloon {
-  position: relative;
-  display: inline-block;
-  margin: 1.5em 0 1.5em 15px;
-  padding: 7px 10px;
-  min-width: 120px;
-  max-width: 100%;
-  color: black;
-  font-size: 16px;
-  background: #f3e5f5;
-  border-radius: 7px;
-}
-.balloon:before {
-  content: "";
-  position: absolute;
-  top: 50%;
-  left: -30px;
-  margin-top: -15px;
-  border: 15px solid transparent;
-  border-right: 15px solid #f3e5f5;
-}
-.balloon p {
-  margin: 0;
-  padding: 0;
-}
+
+
