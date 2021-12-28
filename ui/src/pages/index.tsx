@@ -20,24 +20,20 @@ import {
   Box,
   Dialog,
   DialogTitle,
-  TextareaAutosize,
   TextField,
 } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 import RemoveIcon from "@mui/icons-material/Remove";
-import { css } from "@emotion/react";
 
 //Providerのimport
 import { getChannelList } from "../provider/channel-provider";
-import { getMessageList, addMessage, deleteMessage } from "../provider/message-provider";
+import { getMessageList, addMessage } from "../provider/message-provider";
 
 //modelのimport
 import Channel from "../models/Channel";
 import Message from "../models/Message";
 import User from "../models/User";
-
 import { formatDateTime } from "../util/date-util";
-import { height } from "@mui/system";
 
 export default function Main() {
   const [channels, setChannels] = useState<Channel[]>([]);
@@ -53,8 +49,8 @@ export default function Main() {
   const [value, setValue] = useState<string>(""); // テキストボックスに入力されている値
   const ref = createRef<HTMLDivElement>(); // メッセージエリアを参照するためのマーカー
 
-  const [anchorElSide, setAnchorElSide] = useState<boolean | undefined>(false); // サイドメニュー表示非表示
-  const [anchorElUser, setAnchorElUser] = useState<null | HTMLElement>(null); // ユーザーメニュー表示非表示
+  const [anchorElNav, setAnchorElNav] = useState<null | HTMLElement>(null); // ユーザーメニュー表示非表示
+  const [anchorElUser, setAnchorElUser] = useState<null | HTMLElement>(null); // ハンバーガーメニュー表示非表示
   const [open, setOpen] = useState<boolean>(false); // モーダルのオープン/クローズ
 
   let testUser: User[] = [
@@ -76,6 +72,7 @@ export default function Main() {
   // サイドメニューの幅
   const drawerWidth: number = 240;
   // AppBarの設定
+  const pages: string[] = ["チャンネル", "調整中"];
   const settings: string[] = ["アカウント", "チャンネル", "ログアウト"];
 
   // テスト用にユーザー変更
@@ -90,10 +87,9 @@ export default function Main() {
       channelId: current,
       text: value,
       time: formatDateTime(new Date()),
-      userId: users.id,
+      userId: users.id
     } as Message;
     addMessage(message);
-    setValue("");
   };
 
   // 読み込み時にtestUser＆firebaseから取得する
@@ -112,110 +108,123 @@ export default function Main() {
     });
   }, [ref]);
 
-  // ユーザーメニューをオープン
+  // ハンバーガーメニューをオープン
   const handleOpenUserMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorElUser(event.currentTarget);
   };
-  // ユーザーメニューをクローズ
+  // ハンバーガーメニューをクローズ
   const handleCloseUserMenu = () => {
     setAnchorElUser(null);
   };
-  // サイドメニューをオープン
-  const handleOpenSideMenu = () => {
-    setAnchorElSide(!anchorElSide);
+  // ユーザーメニューをオープン
+  const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorElNav(event.currentTarget);
   };
-  // サイドメニューをクローズ
-  const handleCloseSideMenu = () => {
-    setAnchorElSide(false);
+  // ユーザーメニューをクローズ
+  const handleCloseNavMenu = () => {
+    setAnchorElNav(null);
   };
   // モーダルをオープン
   const handleClickOpen = () => {
     setOpen(true);
   };
   // モーダル外をクリックでクローズ
-  const handleClickClose = () => {
+  const handleClose = () => {
     setOpen(false);
   };
   const handleListItemClick = () => {
     console.log("クリックされました");
   };
-  // Emotionでスタイル設定
-  const balloon = css`
-    position: relative;
-    display: inline-block;
-    margin: 1.5em 0 1.5em 15px;
-    padding: 7px 10px;
-    min-width: 120px;
-    max-width: 100%;
-    color: black;
-    font-size: 16px;
-    background: #f3e5f5;
-    border-radius: 7px;
-    &:before {
-      content: "";
-      position: absolute;
-      top: 50%;
-      left: -30px;
-      margin-top: -15px;
-      border: 15px solid transparent;
-      border-right: 15px solid #f3e5f5;
-    }
-  `;
-  const messagearea = css`
-    height: calc(80vh);
-    margin-left: 20px;
-    scroll-behavior: auto;
-    overflow: auto;
-  `;
 
-  // ブレークポイント　xs: 0px～ sm: 600px～ md: 900px～ lg: 1200px～ xl: 1536px～
+  // ブレークポイント　xs: 0px sm: 600px md: 900px lg: 1200px xl: 1536px
   return (
     <>
-      {/* 大枠はContainerで包む、sxはcssにアクセスする maxのブレークポイントを設定
-      disableGutters maxWidth={false}でパディング削除 */}
-      <Container disableGutters maxWidth={false} sx={{ display: "flex" }}>
+      {/* 大枠はContainerで包む、sxはcssにアクセスする maxのブレークポイントを設定 */}
+      <Container sx={{ display: "flex" }} maxWidth="xl">
         {/* ブラウザーの差異を平均化 */}
         <CssBaseline />
-        {/* AppBarがDrawerよりzIndex + 1 */}
+        {/* AppBarが幅いっぱいになるzIndex*/}
         <AppBar position="fixed" sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}>
           {/* disableGutters 左右の端の余白なし */}
-          <Toolbar>
+          <Toolbar disableGutters>
             {/* varient 文字の大きさ  noWrap 文字の折り返しなし sx テーマへのアクセス mr マージンライト */}
-            <Typography variant="h3" noWrap sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}>
-              HIROBATS
+            <Typography variant="h3" noWrap component="div" sx={{ mr: 2, display: { xs: "none", md: "flex" } }}>
+              hirobats
             </Typography>
-
-            {/* md未満の幅になった場合に表示される flexGrow 幅に合わせて伸縮する*/}
+            {/* md未満の幅になった場合に表示される */}
             <Box sx={{ flexGrow: 1, display: { xs: "flex", md: "none" } }}>
-              <IconButton size="large" onClick={handleOpenSideMenu}>
+              <IconButton
+                size="large"
+                aria-label="account of current user"
+                aria-controls="menu-appbar"
+                aria-haspopup="true"
+                onClick={handleOpenNavMenu}
+                color="inherit"
+              >
                 <MenuIcon />
               </IconButton>
+              <Menu
+                id="menu-appbar"
+                anchorEl={anchorElNav}
+                anchorOrigin={{
+                  vertical: "bottom",
+                  horizontal: "left",
+                }}
+                keepMounted
+                transformOrigin={{
+                  vertical: "top",
+                  horizontal: "left",
+                }}
+                open={Boolean(anchorElNav)}
+                onClose={handleCloseNavMenu}
+                sx={{
+                  display: { xs: "block", md: "none" },
+                }}
+              >
+                {pages.map((page) => (
+                  <MenuItem key={page} onClick={handleCloseNavMenu}>
+                    <Typography textAlign="center">{page}</Typography>
+                  </MenuItem>
+                ))}
+              </Menu>
             </Box>
-            <Typography variant="h5" noWrap sx={{ flexGrow: 1, display: { xs: "flex", md: "none" } }}>
-              HIROBATS
+            <Typography variant="h6" noWrap component="div" sx={{ flexGrow: 1, display: { xs: "flex", md: "none" } }}>
+              hirobats
             </Typography>
-
-            {/* ユーザーメニュー */}
+            <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}>
+              {pages.map((page, index) => (
+                // my = マージントップ&マージンボトム
+                <Button key={index} onClick={handleCloseNavMenu} sx={{ my: 2, color: "white", display: "block" }}>
+                  {page}
+                </Button>
+              ))}
+            </Box>
             <Box sx={{ flexGrow: 0 }}>
               {/* // Tooltip 吹き出し */}
               <Tooltip title="セッティング">
                 {/* p パディング */}
-                <IconButton onClick={handleOpenUserMenu}>
+                <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
                   <Avatar alt={users.name} src={users.avatar} />
                 </IconButton>
               </Tooltip>
               <Menu
+                sx={{ mt: "45px" }}
                 id="menu-appbar"
                 anchorEl={anchorElUser}
                 anchorOrigin={{
-                  vertical: "bottom",
+                  vertical: "top",
+                  horizontal: "right",
+                }}
+                keepMounted
+                transformOrigin={{
+                  vertical: "top",
                   horizontal: "right",
                 }}
                 open={Boolean(anchorElUser)}
                 onClose={handleCloseUserMenu}
               >
                 {settings.map((setting, index) => (
-                  <MenuItem key={index} onClick={handleListItemClick}>
+                  <MenuItem key={index} onClick={handleCloseNavMenu}>
                     <Typography textAlign="center">{setting}</Typography>
                   </MenuItem>
                 ))}
@@ -227,10 +236,10 @@ export default function Main() {
         {/* サイドメニュー */}
         <Drawer
           sx={{
-            display: { xs: "none", md: "flex" },
             width: drawerWidth,
             "& .MuiDrawer-paper": {
               width: drawerWidth,
+              boxSizing: "border-box", // パディング、境界、マージンを含ない
             },
           }}
           variant="permanent" // 永続的に表示
@@ -261,96 +270,55 @@ export default function Main() {
           </List>
         </Drawer>
 
-        {/* サイドメニュー md未満の場合はハンバーガーメニューをクリックして表示*/}
-        <Drawer
-          open={anchorElSide}
-          onClose={handleCloseSideMenu}
-          sx={{
-            display: { xs: "flex", md: "none" },
-          }}
-        >
-          <Toolbar />
-          <List>
-            {/* button要素を追加 */}
-            <ListItem button onClick={handleClickOpen}>
-              ch追加
-            </ListItem>
-            {/* 分離ライン */}
-            <Divider />
-            {/* リスト内にchannelsを展開する */}
-            {users.channel.map((e: number) => (
-              <ListItem button key={e} onClick={() => handleOnClick(e)}>
-                <ListItemText primary={e} />
-              </ListItem>
-            ))}
-            {/* 分離ライン */}
-            <Divider />
-            {/* リスト内にusersを展開する（ユーザー変更テスト用） */}
-            {testUser.map((testUser: User) => (
-              <ListItem button key={testUser.id} onClick={() => changeUser(testUser.id)}>
-                <ListItemText primary={testUser.name} />
-              </ListItem>
-            ))}
-          </List>
-        </Drawer>
-
         {/* メインエリア */}
-        <Container maxWidth={false} disableGutters>
+        <Container maxWidth="xl" ref={ref}>
           {/* Appnav分の高さを下げる */}
           <Toolbar />
-          {/* メッセージ表示エリア */}
-          <Box css={messagearea}>
-            {/* cssと併記するとrefが効かないため、Boxタグを重ねる */}
-            <Box ref={ref}>
-              {/* messageの内容をListセットに展開する */}
-              {messages.map((e: Message, index) => {
-                if (e.channelId === current) {
-                  return (
-                    <div key={index}>
-                      {users.id === e.userId ? (
-                        <List>
-                          <Avatar alt={users.name} src={users.avatar} />
-                          <ListItemText primary={e.userId} />
-                          <ListItemText css={balloon} primary={e.text} />
-                          <ListItemText primary={e.time} />
-                          <Button variant="contained" onClick={() => deleteMessage(e.documentId)}>
-                            削除
-                          </Button>
-                        </List>
-                      ) : (
-                        <List sx={{ mt: 2 }}>
-                          <ListItemText primary={e.userId} />
-                          <ListItemText primary={e.text} />
-                          <ListItemText primary={e.time} />
-                        </List>
-                      )}
-                    </div>
-                  );
-                }
-              })}
-            </Box>
+          {/* messageの内容をListセットに展開する */}
+          {messages.map((e: Message, index) => {
+            if (e.channelId === current) {
+              return (
+                <div key={index}>
+                  {users.id === e.userId ? (
+                    <List>
+                      <Avatar alt={users.name} src={users.avatar} />
+                      <ListItemText primary={e.userId} />
+                      <ListItemText primary={e.text} />
+                      <ListItemText primary={e.time} />
+                    </List>
+                  ) : (
+                    <List>
+                      <ListItemText primary={e.userId} />
+                      <ListItemText primary={e.text} />
+                      <ListItemText primary={e.time} />
+                    </List>
+                  )}
+                </div>
+              );
+            }
+          })}
+          <Box>
+            <TextField
+              id="filled-multiline-flexible"
+              label="Multiline"
+              multiline
+              maxRows={4}
+              value={value}
+              onChange={(e) => setValue(e.target.value)}
+              variant="filled"
+            />
           </Box>
-          <TextField
-            fullWidth
-            minRows={2}
-            maxRows={2}
-            multiline
-            value={value}
-            onChange={(e) => setValue(e.target.value)}
-          />
           {value ? (
-            <Button fullWidth variant="contained" onClick={handleSubmit}>
-              送信する
-            </Button>
+            <Button onClick={handleSubmit}>送信する</Button>
           ) : (
-            <Button fullWidth variant="contained" onClick={handleSubmit} disabled>
+            <Button onClick={handleSubmit} disabled>
               送信する
             </Button>
           )}
         </Container>
 
         {/* モーダル */}
-        <Dialog onClose={handleClickClose} open={open}>
+        <Dialog onClose={handleClose} open={open}>
           {/* モーダルタイトル */}
           <DialogTitle>チャンネル一覧</DialogTitle>
           {/* リストを展開 パディングトップ*/}
