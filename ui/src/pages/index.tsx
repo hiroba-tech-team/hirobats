@@ -36,7 +36,6 @@ import Message from "../models/Message";
 import User from "../models/User";
 
 import { formatDateTime } from "../util/date-util";
-import { height } from "@mui/system";
 
 export default function Main() {
   const [channels, setChannels] = useState<Channel[]>([]);
@@ -139,40 +138,42 @@ export default function Main() {
     console.log("クリックされました");
   };
   // Emotionでスタイル設定
-  const balloon = css`
-    position: relative;
-    display: inline-block;
-    margin: 1.5em 0 1.5em 15px;
-    padding: 7px 10px;
-    min-width: 120px;
-    max-width: 100%;
-    color: black;
-    font-size: 16px;
-    background: #f3e5f5;
-    border-radius: 7px;
-    &:before {
-      content: "";
-      position: absolute;
-      top: 50%;
-      left: -30px;
-      margin-top: -15px;
-      border: 15px solid transparent;
-      border-right: 15px solid #f3e5f5;
-    }
+  const toolBar = css`
+    height: calc(7vh);
   `;
-  const messagearea = css`
-    height: calc(83vh);
-    margin-left: 20px;
+  const messageArea = css`
+    height: calc(80vh);
+    display: flex;
+    justify-content: flex-start;
     scroll-behavior: auto;
     overflow: auto;
   `;
-  const messagecontainer = css`
-    display: flex;
-    align-items: center;
-    margin: 1rem;
+  const textArea = css`
+    height: calc(13vh);
   `;
-  const message = css`
+  const messageContainer = css`
+    display: flex;
+    margin: 10px;
+  `;
+  const balloon = css`
     display: inline-block;
+    position: relative;
+    margin: 0;
+    padding: 10px;
+    max-width: 250px;
+    border-radius: 12px;
+    background: #edf1ee;
+    &::after {
+      content: "";
+      display: inline-block;
+      position: absolute;
+      top: 3px;
+      left: -19px;
+      border: 8px solid transparent;
+      border-right: 18px solid #edf1ee;
+      -webkit-transform: rotate(35deg);
+      transform: rotate(35deg);
+    }
   `;
 
   // ブレークポイント　xs: 0px～ sm: 600px～ md: 900px～ lg: 1200px～ xl: 1536px～
@@ -186,7 +187,7 @@ export default function Main() {
         {/* AppBarがDrawerよりzIndex + 1 */}
         <AppBar position="fixed" sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}>
           {/* disableGutters 左右の端の余白なし */}
-          <Toolbar>
+          <Toolbar css={toolBar}>
             {/* varient 文字の大きさ  noWrap 文字の折り返しなし sx テーマへのアクセス mr マージンライト */}
             <Typography variant="h3" noWrap sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}>
               HIROBATS
@@ -304,8 +305,9 @@ export default function Main() {
         {/* メインエリア */}
         <Container maxWidth={false} disableGutters>
           {/* Appnav分の高さを下げる */}
+          <Toolbar />
           {/* メッセージ表示エリア */}
-          <Box css={messagearea}>
+          <Box css={messageArea}>
             {/* cssと併記するとrefが効かないため、Boxタグを重ねる */}
             <Box ref={ref}>
               {/* messageの内容をListセットに展開する */}
@@ -314,20 +316,23 @@ export default function Main() {
                   return (
                     <div key={index}>
                       {users.id === e.userId ? (
-                        <List css={messagecontainer}>
-                          <Avatar css={message} alt={users.name} src={users.avatar} />
-                          <ListItemText css={message} primary={e.userId} />
-                          <ListItemText css={balloon} primary={e.text} />
-                          <ListItemText css={message} primary={e.time} />
-                          <Button variant="contained" onClick={() => deleteMessage(e.documentId)}>
-                            削除
-                          </Button>
+                        <List>
+                          <Container css={messageContainer}>
+                            <Avatar alt={users.name} src={users.avatar} />
+                            <ListItemText css={balloon} primary={e.text} />
+                            <ListItemText primary={e.time} />
+                            <Button variant="contained" onClick={() => deleteMessage(e.documentId)}>
+                              削除
+                            </Button>
+                          </Container>
                         </List>
                       ) : (
-                        <List sx={{ mt: 2 }}>
-                          <ListItemText primary={e.userId} />
-                          <ListItemText primary={e.text} />
-                          <ListItemText primary={e.time} />
+                        <List>
+                          <Container css={messageContainer}>
+                            <Avatar alt={users.name} src={users.avatar} />
+                            <ListItemText css={balloon} primary={e.text} />
+                            <ListItemText primary={e.time} />
+                          </Container>
                         </List>
                       )}
                     </div>
@@ -336,23 +341,26 @@ export default function Main() {
               })}
             </Box>
           </Box>
-          <TextField
-            fullWidth
-            minRows={2}
-            maxRows={2}
-            multiline
-            value={value}
-            onChange={(e) => setValue(e.target.value)}
-          />
-          {value ? (
-            <Button fullWidth variant="contained" onClick={handleSubmit}>
-              送信する
-            </Button>
-          ) : (
-            <Button fullWidth variant="contained" onClick={handleSubmit} disabled>
-              送信する
-            </Button>
-          )}
+          {/* テキストエリア */}
+          <Box css={textArea}>
+            <TextField
+              fullWidth
+              minRows={2}
+              maxRows={2}
+              multiline
+              value={value}
+              onChange={(e) => setValue(e.target.value)}
+            />
+            {value ? (
+              <Button fullWidth variant="contained" onClick={handleSubmit}>
+                送信する
+              </Button>
+            ) : (
+              <Button fullWidth variant="contained" onClick={handleSubmit} disabled>
+                送信する
+              </Button>
+            )}
+          </Box>
         </Container>
 
         {/* モーダル */}
