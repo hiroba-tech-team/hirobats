@@ -101,11 +101,10 @@ export default function Main() {
     getMessageList(setMessages);
     setUsers(testUser[0]);
   }, []);
-
+  
   useEffect(() => {
     ref!.current!.scrollIntoView({
       // ! 表記はundefinedやnullにはならないということ
-      behavior: "smooth",
       block: "end",
     });
   }, [ref]);
@@ -309,7 +308,7 @@ export default function Main() {
           {/* メッセージ表示エリア */}
           <Box css={messageArea}>
             {/* cssと併記するとrefが効かないため、Boxタグを重ねる */}
-            <Box ref={ref}>
+            <Box>
               {/* messageの内容をListセットに展開する */}
               {messages.map((e: Message, index) => {
                 if (e.channelId === current) {
@@ -339,6 +338,7 @@ export default function Main() {
                   );
                 }
               })}
+              <div ref={ref} />
             </Box>
           </Box>
           {/* テキストエリア */}
