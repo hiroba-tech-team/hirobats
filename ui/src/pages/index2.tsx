@@ -326,6 +326,9 @@ export default function Main() {
         <Dialog onClose={handleClose} open={open}>
           {/* モーダルタイトル */}
           <DialogTitle>チャンネル一覧</DialogTitle>
+          {/*チャンネル追加用の枠 */}
+          <TextField id="standard-basic" label="チャンネル名入力" variant="standard" />
+          <Button variant="outlined">チャンネル追加</Button>
           {/* リストを展開 パディングトップ*/}
           {users.channel.map((e: number, index) => (
             <List key={index}>
