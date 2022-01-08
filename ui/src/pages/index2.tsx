@@ -92,6 +92,15 @@ export default function Main() {
     addMessage(message);
   };
 
+  // const channelSubmit = () => {
+  //   const channel = {
+  //     id: 
+  //     name: string,
+  //     desc: string,
+  //   } as Message;
+  //   addMessage(message);
+  // };
+
   // 読み込み時にtestUser＆firebaseから取得する
   useEffect(() => {
     //getChannel();
@@ -328,7 +337,9 @@ export default function Main() {
           <DialogTitle>チャンネル一覧</DialogTitle>
           {/*チャンネル追加用の枠 */}
           <TextField id="standard-basic" label="チャンネル名入力" variant="standard" />
-          <Button variant="outlined">チャンネル追加</Button>
+          <Button 
+            //onClick={channelSubmit} 
+            variant="outlined">チャンネル追加</Button>
           {/* リストを展開 パディングトップ*/}
           {users.channel.map((e: number, index) => (
             <List key={index}>
