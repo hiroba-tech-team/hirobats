@@ -330,6 +330,8 @@ export default function Main() {
             </Button>
           )}
         </Container>
+        
+
 
         {/* モーダル */}
         <Dialog onClose={handleClose} open={open}>
