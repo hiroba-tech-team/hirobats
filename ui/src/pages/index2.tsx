@@ -330,7 +330,6 @@ export default function Main() {
             </Button>
           )}
         </Container>
-        
 
 
         {/* モーダル */}
